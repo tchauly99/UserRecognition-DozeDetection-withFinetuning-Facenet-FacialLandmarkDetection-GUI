@@ -8,10 +8,10 @@ import configure
 from mtcnn.mtcnn import MTCNN
 from tensorflow.keras.applications import ResNet50
 
-clip_path = "clip/Chau.mp4"
+clip_path = "clip/Me.mp4"
 cap = cv2.VideoCapture(clip_path)
-# detector = MTCNN()
-faceCascade = cv2.CascadeClassifier(configure.HAAR_PATH)
+detector = MTCNN()
+# faceCascade = cv2.CascadeClassifier(configure.HAAR_PATH)
 model = load_model(configure.FACENET_PATH)
 
 
@@ -39,19 +39,26 @@ while True:
     if frame is None:
         break
     clone = frame.copy()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = faceCascade.detectMultiScale(
-        gray,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(40, 40),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
-    # faces = detector.detect_faces(frame)
+    # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # faces = faceCascade.detectMultiScale(
+    #     gray,
+    #     scaleFactor=1.1,
+    #     minNeighbors=5,
+    #     minSize=(40, 40),
+    #     flags=cv2.CASCADE_SCALE_IMAGE
+    # )
+    faces = detector.detect_faces(frame)
     if len(faces) == 0:
         continue
-    # bounding_box = faces[0]['box']
-    bounding_box = faces[0]
+    areas = list()
+    for k in range(len(faces)):
+        bb = faces[k]['box']
+        area = bb[2]*bb[3]
+        areas.append(area)
+    j = np.argmax(areas)
+    bounding_box = faces[j]['box']
+    # bounding_box = faces[0]
+
     x1 = bounding_box[0]
     x2 = bounding_box[0] + bounding_box[2]
     y1 = bounding_box[1]

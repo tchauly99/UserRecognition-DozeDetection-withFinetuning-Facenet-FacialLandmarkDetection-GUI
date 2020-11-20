@@ -11,9 +11,11 @@ ap.add_argument("-v", "--videos", required=False, nargs="+", help="path to video
 ap.add_argument("-ic", "--if_clip", required=True, help="check whether to use clip")
 args = vars(ap.parse_args())
 detector = MTCNN()
+# faceCascade = cv2.CascadeClassifier(configure.HAAR_PATH)
+
 print("----------------------------------------------------")
 print(args["if_clip"])
-if args["if_clip"] == True:
+if args["if_clip"]:
     num_img = 0
     print(args["if_clip"])
     for clip in args["videos"]:
@@ -30,7 +32,7 @@ if args["if_clip"] == True:
             ret, frame = cap.read()
             if frame is None:
                 break
-            if (num_frame % 3) == 0:
+            if (num_frame % 12) == 0:
                 num_img += 1
                 filename = "{}.png".format(num_img)
                 imagePath = os.path.sep.join([output_path, filename])
@@ -48,9 +50,18 @@ if args["if_clip"] == True:
     for imagePath_raw in imagePaths_raw:
         image_raw = cv2.imread(imagePath_raw)
         faces = detector.detect_faces(image_raw)
+        # gray = cv2.cvtColor(image_raw, cv2.COLOR_BGR2GRAY)
+        # faces = faceCascade.detectMultiScale(
+        #     gray,
+        #     scaleFactor=1.1,
+        #     minNeighbors=5,
+        #     minSize=(40, 40),
+        #     flags=cv2.CASCADE_SCALE_IMAGE
+        # )
         if len(faces) != 0:
             i += 1
             bounding_box = faces[0]['box']
+            # bounding_box = faces[0]
             x1 = bounding_box[0]
             x2 = bounding_box[0] + bounding_box[2]
             y1 = bounding_box[1]
@@ -72,10 +83,19 @@ else:
     print("[INFO]: getting dataset from images")
     for imagePath_raw in imagePaths_raw:
         image_raw = cv2.imread(imagePath_raw)
+        # gray = cv2.cvtColor(image_raw, cv2.COLOR_BGR2GRAY)
+        # faces = faceCascade.detectMultiScale(
+        #     gray,
+        #     scaleFactor=1.1,
+        #     minNeighbors=5,
+        #     minSize=(40, 40),
+        #     flags=cv2.CASCADE_SCALE_IMAGE
+        # )
         faces = detector.detect_faces(image_raw)
         if len(faces) != 0:
             i += 1
             bounding_box = faces[0]['box']
+            # bounding_box = faces[0]
             x1 = bounding_box[0]
             x2 = bounding_box[0] + bounding_box[2]
             y1 = bounding_box[1]
