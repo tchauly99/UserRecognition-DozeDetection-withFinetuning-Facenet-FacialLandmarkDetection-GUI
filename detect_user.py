@@ -6,6 +6,7 @@ import cv2
 from mtcnn.mtcnn import MTCNN
 import configure
 
+
 cap = cv2.VideoCapture(0)
 detector = MTCNN()
 
