@@ -17,6 +17,7 @@ print("----------------------------------------------------")
 print(args["if_clip"])
 if args["if_clip"]:
     num_img = 0
+    num_test = 0
     print(args["if_clip"])
     for clip in args["videos"]:
         # cap = cv2.VideoCapture(os.path.sep.join([configure.CLIP, args["videos"]]))
@@ -28,16 +29,25 @@ if args["if_clip"]:
         num_frame = 0
         print("[INFO]: extracting images from clip for class {}".format(class_name))
         while True:
+            ret, frame = cap.read()
+            if frame is None:
+                break
+            num_test += 1
+        division = int(num_test/50)
+        cap = cv2.VideoCapture(os.path.sep.join([configure.CLIP, clip]))
+        while True:
             num_frame += 1
             ret, frame = cap.read()
             if frame is None:
                 break
-            if (num_frame % 12) == 0:
+            if (num_frame % division) == 0:
                 num_img += 1
                 filename = "{}.png".format(num_img)
                 imagePath = os.path.sep.join([output_path, filename])
                 if frame is not None and imagePath is not None:
                     cv2.imwrite(imagePath, frame)
+                if num_img == 50:
+                    break
             else:
                 continue
     print("[INFO]: getting dataset from clip for classes {}".format(args["videos"]))
