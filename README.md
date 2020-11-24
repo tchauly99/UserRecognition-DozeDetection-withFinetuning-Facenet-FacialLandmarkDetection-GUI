@@ -13,25 +13,14 @@ haarcascade_frontalface_default.xml
 <pre>         
 .
 ├── clip
-│   ├── Chau1.mp4
-│   ├── Chau.mp4
-│   ├── Me.mp4
-│   ├── Nghia1.mp4
-│   └── Nghia.mp4
 ├── dataset
 ├── dataset_fromclip
 │   ├── Chau
 │   └── Nghia
 ├── dataset_raw
-│   ├── ChiPu
-│   ├── Erik
-│   ├── HariWon
-│   ├── HienHo
-│   ├── SonTung
-│   ├── TranThanh
-│   ├── TrinhThao
-│   ├── TrucAnh
-│   └── TruongGiang
+│   ├── Chau2
+│   ├── Duong2
+│   └── Nghia2
 ├── datasetraw_fromclip
 │   ├── Chau
 │   └── Nghia
@@ -46,6 +35,7 @@ haarcascade_frontalface_default.xml
 ├── dataset_fromclip.py
 ├── dataset.py
 ├── datasetraw_fromclip.py
+├── dataset_raw.zip
 ├── detect_cam.py
 ├── detect_clip2.py
 ├── detect_clip.py
@@ -55,6 +45,7 @@ haarcascade_frontalface_default.xml
 ├── fine_tuning.py
 ├── fine_tuning_svm_resnet.py
 ├── fine_tuning_vgg16.py
+├── get_video.py
 ├── haarcascade_frontalface_default.xml
 ├── README.md
 ├── resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
