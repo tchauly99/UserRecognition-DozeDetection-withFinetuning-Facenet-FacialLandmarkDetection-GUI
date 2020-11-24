@@ -9,12 +9,8 @@ resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
 facenet_keras.h5
 
 haarcascade_frontalface_default.xml
-
-AI_TGM
-
-folders to create: clip, output, dataset_raw, dataset, datasetraw_fromclip, dataset_fromclip
           
-          
+<pre>         
 .
 ├── clip
 │   ├── Chau1.mp4
@@ -22,14 +18,10 @@ folders to create: clip, output, dataset_raw, dataset, datasetraw_fromclip, data
 │   ├── Me.mp4
 │   ├── Nghia1.mp4
 │   └── Nghia.mp4
-├── common_dataset.py
-├── configure.py
 ├── dataset
 ├── dataset_fromclip
 │   ├── Chau
 │   └── Nghia
-├── dataset_fromclip.py
-├── dataset.py
 ├── dataset_raw
 │   ├── ChiPu
 │   ├── Erik
@@ -43,6 +35,16 @@ folders to create: clip, output, dataset_raw, dataset, datasetraw_fromclip, data
 ├── datasetraw_fromclip
 │   ├── Chau
 │   └── Nghia
+├── output
+│   ├── label.pickle
+│   ├── model.h5
+│   └── plot.png
+├── __pycache__
+│   └── configure.cpython-36.pyc
+├── common_dataset.py
+├── configure.py
+├── dataset_fromclip.py
+├── dataset.py
 ├── datasetraw_fromclip.py
 ├── detect_cam.py
 ├── detect_clip2.py
@@ -54,9 +56,7 @@ folders to create: clip, output, dataset_raw, dataset, datasetraw_fromclip, data
 ├── fine_tuning_svm_resnet.py
 ├── fine_tuning_vgg16.py
 ├── haarcascade_frontalface_default.xml
-├── output
-│   ├── label.pickle
-│   ├── model.h5
-│   └── plot.png
+├── README.md
 ├── resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5
 └── test.py
+</pre>
