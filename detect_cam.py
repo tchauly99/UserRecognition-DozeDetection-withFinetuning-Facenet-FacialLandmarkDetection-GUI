@@ -34,6 +34,10 @@ while True:
     areas = list()
     for k in range(len(faces)):
         bb = faces[k]
+        if bb[0] < 0:
+            faces[k][0] = 0
+        if bb[1] < 0:
+            faces[k][1] = 0
         area = bb[2] * bb[3]
         areas.append(area)
     j = np.argmax(areas)
@@ -51,7 +55,7 @@ while True:
     pred = model.predict(image)
     pred_index = np.argmax(pred, axis=1)
     prob = pred[:, pred_index]
-    if prob >= 0.5:
+    if prob >= 0.8:
         label = lb.classes_[pred_index]
     else:
         label = 'Unknown'

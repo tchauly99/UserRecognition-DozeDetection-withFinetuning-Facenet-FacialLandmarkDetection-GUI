@@ -23,8 +23,8 @@ import os
 import configure
 import configure
 
-imagePaths = list(paths.list_images(configure.FROM_CLIP))
-# imagePaths = list(paths.list_images(configure.DATA))
+# imagePaths = list(paths.list_images(configure.FROM_CLIP))
+imagePaths = list(paths.list_images(configure.DATA))
 data = []
 labels = []
 for imagePath in imagePaths:
@@ -50,7 +50,7 @@ labels = to_categorical(labels)
 num_classes = labels.shape[1]
 print(num_classes)
 (trainX, testX, trainY, testY) = train_test_split(data, labels,
-                                                  test_size=0.2, stratify=labels, random_state=42)
+                                                  test_size=0.3, stratify=labels, random_state=42)
 aug = ImageDataGenerator(
     rotation_range=20,
     zoom_range=0.15,
@@ -61,23 +61,23 @@ aug = ImageDataGenerator(
     fill_mode="nearest")
 print("[INFO] preparing model...")
 
-baseModel = ResNet50(weights="resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5",
+baseModel = ResNet50(weights="imagenet",
                      include_top=False, input_tensor=Input(shape=(224, 224, 3)))
 
 headModel = baseModel.output
-headModel = AveragePooling2D(pool_size=(7, 7))(headModel)
+headModel = AveragePooling2D(pool_size=(2, 2))(headModel)
 headModel = Flatten(name="flatten")(headModel)
-headModel = Dense(128*7*7, activation="relu")(headModel)
+headModel = Dense(128*2*2, activation="relu")(headModel)
 headModel = Dropout(0.5)(headModel)
 headModel = Dense(num_classes, activation="softmax")(headModel)
 
 
-headModel = baseModel.output
-headModel = AveragePooling2D(pool_size=(7, 7))(headModel)
-headModel = Dense(128, activation="relu")(headModel)
-headModel = Dropout(0.25)(headModel)
-headModel = Flatten(name="flatten")(headModel)
-headModel = Dense(num_classes, activation="softmax")(headModel)
+# headModel = baseModel.output
+# headModel = AveragePooling2D(pool_size=(7, 7))(headModel)
+# headModel = Dense(128, activation="relu")(headModel)
+# headModel = Dropout(0.25)(headModel)
+# headModel = Flatten(name="flatten")(headModel)
+# headModel = Dense(num_classes, activation="softmax")(headModel)
 
 model = Model(inputs=baseModel.input, outputs=headModel)
 
