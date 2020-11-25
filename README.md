@@ -1,5 +1,5 @@
 # AI_TGM
-
+Repo to refer: https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a
 Models to download:
 
 rcmalli_vggface_tf_notop_vgg16.h5
