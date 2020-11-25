@@ -17,6 +17,7 @@ haarcascade_frontalface_default.xml
 ├── dataset_fromclip
 │   ├── Chau
 │   └── Nghia
+├── users
 ├── dataset_raw
 │   ├── Chau2
 │   ├── Duong2
@@ -24,6 +25,7 @@ haarcascade_frontalface_default.xml
 ├── datasetraw_fromclip
 │   ├── Chau
 │   └── Nghia
+├── users_raw
 ├── output
 │   ├── label.pickle
 │   ├── model.h5
@@ -41,6 +43,7 @@ haarcascade_frontalface_default.xml
 ├── detect_clip.py
 ├── detect_image.py
 ├── detect_user.py
+├── facenet.py
 ├── fine_tuning_facenet.py
 ├── fine_tuning.py
 ├── fine_tuning_svm_resnet.py
