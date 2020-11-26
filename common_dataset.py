@@ -91,7 +91,7 @@ if args["if_clip"]:
 else:
     imagePaths_raw = list(paths.list_images(configure.DATA_RAW))
     class_names = os.listdir(configure.DATA_RAW)
-    class_names = list(["Chau"])
+    # class_names = list(["Chau"])
     print("[INFO]: getting dataset from images")
     for class_name in class_names:
         print("[INFO]: getting dataset for class {}".format(class_name))

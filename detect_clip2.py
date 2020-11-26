@@ -9,9 +9,10 @@ from mtcnn.mtcnn import MTCNN
 from tensorflow.keras.applications import ResNet50
 
 clip_path = "clip/Me.mp4"
-cap = cv2.VideoCapture(clip_path)
-detector = MTCNN()
-# faceCascade = cv2.CascadeClassifier(configure.HAAR_PATH)
+# cap = cv2.VideoCapture(clip_path)
+cap = cv2.VideoCapture(0)
+# detector = MTCNN()
+faceCascade = cv2.CascadeClassifier(configure.HAAR_PATH)
 model = load_model(configure.FACENET_PATH)
 
 
@@ -31,38 +32,39 @@ print("[INFO] loading model and label binarizer...")
 with open(configure.SVM_PATH, 'rb') as infile:
     model1, lb = pickle.load(infile)
 
-# with open("output/your_model.pkl", 'rb') as infile:
-#     model1, lb = pickle.load(infile)
 print("[INFO] classifying...")
 while True:
     ret, frame = cap.read()
     if frame is None:
         break
     clone = frame.copy()
-    # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # faces = faceCascade.detectMultiScale(
-    #     gray,
-    #     scaleFactor=1.1,
-    #     minNeighbors=5,
-    #     minSize=(40, 40),
-    #     flags=cv2.CASCADE_SCALE_IMAGE
-    # )
-    faces = detector.detect_faces(frame)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(40, 40),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+    # faces = detector.detect_faces(frame)
     if len(faces) == 0:
         continue
     areas = list()
     for k in range(len(faces)):
-        bb = faces[k]['box']
-        area = bb[2]*bb[3]
+        bb = faces[k]
+        if bb[0] < 0:
+            faces[k][0] = 0
+        if bb[1] < 0:
+            faces[k][1] = 0
+        area = bb[2] * bb[3]
         areas.append(area)
     j = np.argmax(areas)
-    bounding_box = faces[j]['box']
-    # bounding_box = faces[0]
-
+    bounding_box = faces[j]
     x1 = bounding_box[0]
     x2 = bounding_box[0] + bounding_box[2]
     y1 = bounding_box[1]
     y2 = bounding_box[1] + bounding_box[3]
+
     image = frame[y1:y2, x1:x2]
     image = np.resize(image, (160, 160, 3))
     image = get_embedding(model, image)

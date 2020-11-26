@@ -30,14 +30,17 @@ def get_embedding(model_, face):
 
 
 model = load_model(configure.FACENET_PATH)
-print(len(os.listdir(configure.FROM_CLIP)))
-imagePaths = list(paths.list_images(configure.FROM_CLIP))
-# imagePaths = list(paths.list_images(configure.DATA))
+# print(len(os.listdir(configure.FROM_CLIP)))
+# imagePaths = list(paths.list_images(configure.FROM_CLIP))
+imagePaths = list(paths.list_images(configure.DATA))
+num_class = len(os.listdir(configure.DATA))
+print("NUMBER OF CLASS IS {}".format(num_class))
+
 data = list()
 labels = list()
 for imagePath in imagePaths:
     image = cv2.imread(imagePath)
-    # image = np.resize(image, (160, 160, 3))
+    image = np.resize(image, (160, 160, 3))
     image = get_embedding(model, image)
     data.append(image)
     label = imagePath.split(os.path.sep)[-2]
@@ -46,10 +49,10 @@ for imagePath in imagePaths:
 labels = np.array(labels)
 data = np.array(data, dtype="float32")
 
-data[data == np.inf] = np.nan
-
-data = pd.DataFrame(data).fillna(0)
-data = np.array(data, dtype="float32")
+# data[data == np.inf] = np.nan
+#
+# data = pd.DataFrame(data).fillna(0)
+# data = np.array(data, dtype="float32")
 norm = Normalizer(norm='l2')
 data = norm.transform(data)
 
@@ -57,11 +60,9 @@ lb = preprocessing.LabelEncoder()
 lb.fit(labels)
 labels = lb.transform(labels)
 
-num_class = labels.shape
-print("NUMBER OF CLASS IS {}".format(num_class))
 print(labels)
 (trainX, testX, trainY, testY) = train_test_split(data, labels,
-                                                  test_size=0.10, stratify=labels, random_state=42)
+                                                  test_size=0.20, stratify=labels, random_state=42)
 
 model1 = SVC(kernel='linear', probability=True)
 model1.fit(trainX, trainY)
