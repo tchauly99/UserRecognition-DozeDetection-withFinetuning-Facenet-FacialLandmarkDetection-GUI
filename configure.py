@@ -28,9 +28,12 @@ OUTPUT_PATH = "output"
 MODEL_PATH = os.path.sep.join([OUTPUT_PATH, "model.h5"])
 LABEL_PATH = os.path.sep.join([OUTPUT_PATH, "label.pickle"])
 PLOT_PATH = os.path.sep.join([OUTPUT_PATH, "plot.png"])
-
-HAAR_PATH = "haarcascade_frontalface_default.xml"
-RESNET50_WEIGHTS_PATH = "resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5"
-
 SVM_PATH = os.path.sep.join([OUTPUT_PATH, "model_svm.pkl"])
-FACENET_PATH = "facenet_keras.h5"
+
+MODELS_PATH = "models"
+HAAR_PATH = os.path.sep.join([MODELS_PATH, "haarcascade_frontalface_default.xml"])
+RESNET50_WEIGHTS_PATH = os.path.sep.join([MODELS_PATH, "resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5"])
+FACENET_PATH = os.path.sep.join([MODELS_PATH, "facenet_keras.h5"])
+SHAPE_PREDICTOR_PATH = os.path.sep.join([MODELS_PATH, "shape_predictor_68_face_landmarks.dat"])
+
+

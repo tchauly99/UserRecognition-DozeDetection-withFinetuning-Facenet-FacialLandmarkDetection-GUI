@@ -29,9 +29,9 @@ for class_name in class_names:
     imagePaths = os.path.sep.join([configure.USER, class_name])
     imagePaths = list(paths.list_images(imagePaths))
     image = cv2.imread(imagePaths[0])
-    image = np.resize(image, (160, 160, 3))
-    prewhitened = facenet.prewhiten(image)
-    embedding = get_embedding(model, prewhitened)
+    # image = np.resize(image, (160, 160, 3))
+    pre_whitened = facenet.prewhiten(image)
+    embedding = get_embedding(model, pre_whitened)
     embeddings.append(embedding)
 while True:
     ret, frame = cap.read()
@@ -66,23 +66,15 @@ while True:
     det[1] = bounding_box[1]
     det[3] = bounding_box[1] + bounding_box[3]
     det = np.squeeze(det[0:4])
-    print(det)
     bb = np.zeros(4, dtype=np.int32)
     bb[0] = np.maximum(det[0] - margin / 2, 0)
     bb[1] = np.maximum(det[1] - margin / 2, 0)
     bb[2] = np.minimum(det[2] + margin / 2, frame.shape[1])
     bb[3] = np.minimum(det[3] + margin / 2, frame.shape[0])
-    print(bb)
-    cropped = frame[bb[1]:bb[3], bb[0]:bb[2], :]
-    aligned = cv2.resize(cropped, (160, 160))
-    prewhitened = facenet.prewhiten(aligned)
-
-    y1 = bb[1]
-    y2 = bb[3]
-    x1 = bb[0]
-    x2 = bb[2]
-
-    target = get_embedding(model, prewhitened)
+    aligned = frame[bb[1]:bb[3], bb[0]:bb[2], :]
+    # aligned = cv2.resize(aligned, (160, 160))
+    pre_whitened = facenet.prewhiten(aligned)
+    target = get_embedding(model, pre_whitened)
     target = np.array(target)
     distances = []
     for embedding in embeddings:
@@ -94,12 +86,18 @@ while True:
         label = class_names[index]
     else:
         label = 'Unknown'
+    y1 = bb[1]
+    y2 = bb[3]
+    x1 = bb[0]
+    x2 = bb[2]
     cv2.rectangle(clone, (x1, y1), (x2, y2), (0, 0, 255), 2)
     y = y1 - 10 if y1 - 10 > 10 else y1 + 10
     text = "{}: {}%".format(label, prob)
     cv2.putText(clone, text, (x1, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-    # cv2.resize(clone, (20, 20))
     cv2.imshow("result", clone)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+cv2.destroyAllWindows()
+cap.stop()
