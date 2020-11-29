@@ -22,7 +22,7 @@ FOLDER_NONE = os.path.sep.join([DATA, "None"])
 
 INPUT_SIZE = (224, 224)
 LR = 1e-4
-BS = 30
+BS = 20
 EPOCHS = 25
 OUTPUT_PATH = "output"
 MODEL_PATH = os.path.sep.join([OUTPUT_PATH, "model.h5"])

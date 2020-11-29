@@ -25,6 +25,7 @@ import configure
 
 # imagePaths = list(paths.list_images(configure.FROM_CLIP))
 imagePaths = list(paths.list_images(configure.DATA))
+BS = int(0.23*len(imagePaths))
 data = []
 labels = []
 for imagePath in imagePaths:
@@ -65,9 +66,9 @@ baseModel = ResNet50(weights="imagenet",
                      include_top=False, input_tensor=Input(shape=(224, 224, 3)))
 
 headModel = baseModel.output
-headModel = AveragePooling2D(pool_size=(2, 2))(headModel)
+headModel = AveragePooling2D(pool_size=(7, 7))(headModel)
 headModel = Flatten(name="flatten")(headModel)
-headModel = Dense(128*2*2, activation="relu")(headModel)
+headModel = Dense(128*7*7, activation="relu")(headModel)
 headModel = Dropout(0.5)(headModel)
 headModel = Dense(num_classes, activation="softmax")(headModel)
 
@@ -92,14 +93,14 @@ model.compile(loss=loss, optimizer=opt,
               metrics=["accuracy"])
 
 print("[INFO] training model...")
-H = model.fit(aug.flow(trainX, trainY, batch_size=configure.BS),
-              steps_per_epoch=len(trainX) // configure.BS,
+H = model.fit(aug.flow(trainX, trainY, batch_size=BS),
+              steps_per_epoch=len(trainX) // BS,
               validation_data=(testX, testY),
-              validation_steps=len(testX) // configure.BS,
+              validation_steps=len(testX) // BS,
               epochs=configure.EPOCHS)
 
 print("[INFO] evaluating network...")
-pred = model.predict(testX, batch_size=configure.BS)
+pred = model.predict(testX, batch_size=BS)
 pred_index = np.argmax(pred, axis=1)
 print(classification_report(testY.argmax(axis=1), pred_index, target_names=lb.classes_))
 

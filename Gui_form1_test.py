@@ -41,8 +41,6 @@ import matplotlib.pyplot as plt
 import pickle
 
 
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -71,10 +69,6 @@ class MainWindow(QMainWindow):
         self.COUNTER = 0
         self.TOTAL = 0
 
-
-        self.List_User_function()
-        self.List_User_function_2()
-
         self.unlock_counter = 0
         self.labels = []
         self.label = None
@@ -83,14 +77,11 @@ class MainWindow(QMainWindow):
         self.dlib_init_function()
         self.manual_init_function()
 
-
         print("[INFO] loading model and label binarizer...")
-
-
 
     def dlib_init_function(self):
         self.mode = 0
-        self.model = load_model(configure.FACENET_PATH)
+        self.model_facenet = load_model(configure.FACENET_PATH)
         self.facenet_compare_setup_function()
         self.class_names = os.listdir(configure.USER)
 
@@ -102,6 +93,7 @@ class MainWindow(QMainWindow):
         self.ui.Start_Btn.clicked.connect(self.facenet_compare_function)
         self.ui.Stop_Btn.clicked.connect(self.facenet_compare_stop_function)
 
+        self.List_User_function()
 
     def manual_init_function(self):
         self.num_frame = 0
@@ -117,9 +109,11 @@ class MainWindow(QMainWindow):
 
         self.ui.DeleteUser_Btn_3.clicked.connect(self.delete_user_function)
         self.ui.Capture_Btn_3.clicked.connect(self.add_user_function_2)
-        self.ui.Train_Btn.clicked.connect(self.train_function)
-        # self.ui.Start_Btn_2.clicked.connect(self.compare_function_2)
+        # self.ui.Train_Btn.clicked.connect(self.train_function)
+        self.ui.Start_Btn_2.clicked.connect(self.compare_function_2)
         # self.ui.Stop_Btn_2.clicked.connect(self.facenet_compare_stop_function_2)
+
+        self.List_User_function_2()
 
     def detect_align_function(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -158,6 +152,39 @@ class MainWindow(QMainWindow):
         else:
             aligned = image
             return aligned, 0, 0
+
+    def detect_function(self, image):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        faces = self.face_cascade.detectMultiScale(
+            gray,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(40, 40),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+        if len(faces) != 0:
+            areas = list()
+            for k in range(len(faces)):
+                bb = faces[k]
+                if bb[0] < 0:
+                    faces[k][0] = 0
+                if bb[1] < 0:
+                    faces[k][1] = 0
+                area = bb[2] * bb[3]
+                areas.append(area)
+            j = np.argmax(areas)
+            bounding_box = faces[j]
+            det = np.zeros(4, dtype=np.int32)
+            det[0] = bounding_box[0]
+            det[2] = bounding_box[0] + bounding_box[2]
+            det[1] = bounding_box[1]
+            det[3] = bounding_box[1] + bounding_box[3]
+            cut = image[det[1]:det[3], det[0]:det[2], :]
+            return cut, 1, bb
+        else:
+            cut = image
+            return cut, 0, 0
+
     def main_widget_function(self):
         if self.ui.tabWidget.currentIndex() == 0:
             self.timer.timeout.connect(self.viewcam3)
@@ -167,7 +194,7 @@ class MainWindow(QMainWindow):
     def List_User_function_2(self):
         self.ui.ListUser_Cb_3.clear()
         self.class_names_2 = os.listdir(configure.DATA)
-        [self.ui.ListUser_Cb_3.addItem(member) for member in self.class_names]
+        [self.ui.ListUser_Cb_3.addItem(member) for member in self.class_names_2]
 
     def delete_user_function_2(self):
         path = os.path.sep.join([configure.DATA, self.ui.ListUser_Cb_3.currentText()])
@@ -175,6 +202,7 @@ class MainWindow(QMainWindow):
         self.List_User_function_2()
 
     def add_user_function_2(self):
+        self.timer.timeout.connect(self.viewcam4)
         self.num_frame = 0
         self.num_image = 0
         self.output_path = os.path.sep.join([configure.DATA_RAW, self.ui.username_Tb_3.text()])
@@ -209,7 +237,9 @@ class MainWindow(QMainWindow):
                 i += 1
 
     def train_function(self):
+        self.timer.stop()
         imagePaths = list(paths.list_images(configure.DATA))
+        BS = int(0.23 * len(imagePaths))
         data = []
         labels = []
         for imagePath in imagePaths:
@@ -245,7 +275,7 @@ class MainWindow(QMainWindow):
             fill_mode="nearest")
         print("[INFO] preparing model...")
 
-        baseModel = ResNet50(weights="imagenet",
+        baseModel = ResNet50(weights='imagenet',
                              include_top=False, input_tensor=Input(shape=(224, 224, 3)))
 
         headModel = baseModel.output
@@ -268,14 +298,14 @@ class MainWindow(QMainWindow):
                       metrics=["accuracy"])
 
         print("[INFO] training model...")
-        H = model.fit(aug.flow(trainX, trainY, batch_size=configure.BS),
-                      steps_per_epoch=len(trainX) // configure.BS,
+        H = model.fit(aug.flow(trainX, trainY, batch_size=BS),
+                      steps_per_epoch=len(trainX) // BS,
                       validation_data=(testX, testY),
-                      validation_steps=len(testX) // configure.BS,
+                      validation_steps=len(testX) // BS,
                       epochs=configure.EPOCHS)
 
         print("[INFO] evaluating network...")
-        pred = model.predict(testX, batch_size=configure.BS)
+        pred = model.predict(testX, batch_size=BS)
         pred_index = np.argmax(pred, axis=1)
         print(classification_report(testY.argmax(axis=1), pred_index, target_names=lb.classes_))
 
@@ -300,13 +330,16 @@ class MainWindow(QMainWindow):
         plt.ylabel("Loss/Accuracy")
         plt.legend(loc="lower left")
         plt.savefig(configure.PLOT_PATH)
+        self.timer.timeout.connect(self.viewcam4)
 
     def compare_function_2(self):
-        None
+        print("[INFO] loading model and label binarizer...")
+        self.model = load_model(configure.MODEL_PATH)
+        self.lb = pickle.loads(open(configure.LABEL_PATH, "rb").read())
+        self.mode_2 = 2
 
     def facenet_compare_stop_function_2(self):
         None
-
 
     def viewcam4(self):
         ret, self.image = self.cap.read()
@@ -322,7 +355,7 @@ class MainWindow(QMainWindow):
 
             if self.mode_2 == 1:
                 self.num_frame += 1
-                if self.num_frame % 5 == 0:
+                if self.num_frame % 3 == 0:
                     self.num_image += 1
                 file_name = "{}.png".format(self.num_image)
                 imagePath = os.path.sep.join([self.output_path, file_name])
@@ -335,11 +368,29 @@ class MainWindow(QMainWindow):
                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
             elif self.mode_2 == 2:
-                self.compare_function_2()
-
-
+                clone = self.image.copy()
+                cut, face_existence, bb = self.detect_function(clone)
+                image = cv2.resize(cut, configure.INPUT_SIZE, interpolation=cv2.INTER_CUBIC)
+                image = img_to_array(image)
+                image = np.array(image, dtype="float32")
+                image = image.reshape([1, 224, 224, 3])
+                pred = self.model.predict(image)
+                pred_index = np.argmax(pred, axis=1)
+                prob = pred[:, pred_index]
+                if prob >= 0.8:
+                    label = self.lb.classes_[pred_index]
+                else:
+                    label = 'Unknown'
+                y1 = bb[1]
+                y2 = bb[3]
+                x1 = bb[0]
+                x2 = bb[2]
+                cv2.rectangle(self.image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                y = y1 - 10 if y1 - 10 > 10 else y1 + 10
+                text = "{}: {}%".format(label, prob * 100)
+                cv2.putText(self.image, text, (x1, y),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             self.showImage()
-
             self.checkFPS()
 
     def List_User_function(self):
@@ -383,7 +434,7 @@ class MainWindow(QMainWindow):
             image = cv2.imread(imagePaths[0])
             # image = np.resize(image, (160, 160, 3))
             pre_whitened = facenet.prewhiten(image)
-            embedding = self.get_embedding(self.model, pre_whitened)
+            embedding = self.get_embedding(self.model_facenet, pre_whitened)
             self.embeddings.append(embedding)
 
     def facenet_compare_function(self):
@@ -396,17 +447,17 @@ class MainWindow(QMainWindow):
             image = cv2.imread(imagePaths[0])
             # image = np.resize(image, (160, 160, 3))
             pre_whitened = facenet.prewhiten(image)
-            embedding = self.get_embedding(self.model, pre_whitened)
+            embedding = self.get_embedding(self.model_facenet, pre_whitened)
             self.embeddings.append(embedding)
 
         self.mode = 1
 
     def secure_function(self):
         frame = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
-        aligned, face_existence, bb = self.detect_align_function(frame)
+        cut, face_existence, bb = self.detect_function(frame)
         if face_existence:
-            pre_whitened = facenet.prewhiten(aligned)
-            target = self.get_embedding(self.model, pre_whitened)
+            pre_whitened = facenet.prewhiten(cut)
+            target = self.get_embedding(self.model_facenet, pre_whitened)
             target = np.array(target)
             distances = []
             for embedding in self.embeddings:
@@ -466,7 +517,7 @@ class MainWindow(QMainWindow):
         self.ui.Lock_Lb.setText("Locked")
         self.TOTAL = 0
         self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
-        #self.timer.stop()
+        # self.timer.stop()
 
     def viewcam3(self):
         ret, self.image = self.cap.read()
@@ -497,15 +548,9 @@ class MainWindow(QMainWindow):
             elif self.mode == 2:
                 self.blinking_function()
 
-
             self.showImage()
 
             self.checkFPS()
-
-
-
-
-
 
     def showImage(self):
         self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
@@ -513,7 +558,7 @@ class MainWindow(QMainWindow):
         step = channel * width
 
         qImg = QImage(self.image.data, width, height, step, QImage.Format_RGB888)
-        if(self.ui.tabWidget.currentIndex() == 0):
+        if (self.ui.tabWidget.currentIndex() == 0):
             self.ui.Player.setPixmap(QPixmap.fromImage(qImg))
         else:
             self.ui.Player_2.setPixmap(QPixmap.fromImage(qImg))
@@ -541,7 +586,6 @@ class MainWindow(QMainWindow):
         print(int(round(1000000 / deltime)))
         self.time0 = self.time1
 
-
     def controlTimer(self):
         self.time0 = datetime.now().microsecond
 
@@ -561,5 +605,3 @@ if __name__ == "__main__":
     mainWindow = MainWindow()
     mainWindow.show()
     sys.exit(app.exec_())
-
-
