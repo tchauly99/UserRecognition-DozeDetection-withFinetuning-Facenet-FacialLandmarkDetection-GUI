@@ -65,7 +65,6 @@ class MainWindow(QMainWindow):
         (self.rStart, self.rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
         self.EYE_AR_THRESH = 0.3
         self.EYE_AR_CONSEC_FRAMES = 3
-        # initialize the frame counters and the total number of blinks
         self.COUNTER = 0
         self.TOTAL = 0
 
@@ -111,7 +110,7 @@ class MainWindow(QMainWindow):
         self.ui.Capture_Btn_3.clicked.connect(self.add_user_function_2)
         # self.ui.Train_Btn.clicked.connect(self.train_function)
         self.ui.Start_Btn_2.clicked.connect(self.compare_function_2)
-        # self.ui.Stop_Btn_2.clicked.connect(self.facenet_compare_stop_function_2)
+        self.ui.Stop_Btn_2.clicked.connect(self.facenet_compare_stop_function_2)
 
         self.List_User_function_2()
 
@@ -185,10 +184,46 @@ class MainWindow(QMainWindow):
             cut = image
             return cut, 0, 0
 
+    def blinking_function(self):
+
+        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        rects = self.detector(gray, 0)
+        for rect in rects:
+            shape = self.predictor(gray, rect)
+            shape = face_utils.shape_to_np(shape)
+            leftEye = shape[self.lStart:self.lEnd]
+            rightEye = shape[self.rStart:self.rEnd]
+            leftEAR = self.eye_aspect_ratio(leftEye)
+            rightEAR = self.eye_aspect_ratio(rightEye)
+            ear = (leftEAR + rightEAR) / 2.0
+            leftEyeHull = cv2.convexHull(leftEye)
+            rightEyeHull = cv2.convexHull(rightEye)
+            cv2.drawContours(self.image, [leftEyeHull], -1, (0, 255, 0), 1)
+            cv2.drawContours(self.image, [rightEyeHull], -1, (0, 255, 0), 1)
+            if ear < self.EYE_AR_THRESH:
+                self.COUNTER += 1
+                if self.COUNTER >= 200:
+                    cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (100, 50),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            else:
+                if self.COUNTER >= self.EYE_AR_CONSEC_FRAMES:
+                    self.TOTAL += 1
+                self.COUNTER = 0
+            cv2.putText(self.image, "Blinks: {}".format(self.TOTAL), (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(self.image, "EAR: {:.2f}".format(ear), (250, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(self.image, "USER: {}".format(self.label), (10, 70),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
     def main_widget_function(self):
         if self.ui.tabWidget.currentIndex() == 0:
+            self.mode = 0
+            self.ui.Lock_Lb.setText("Locked")
             self.timer.timeout.connect(self.viewcam3)
         else:
+            self.mode_2 = 0
+            self.ui.Lock_Lb_2.setText("Locked")
             self.timer.timeout.connect(self.viewcam4)
 
     def List_User_function_2(self):
@@ -336,10 +371,41 @@ class MainWindow(QMainWindow):
         print("[INFO] loading model and label binarizer...")
         self.model = load_model(configure.MODEL_PATH)
         self.lb = pickle.loads(open(configure.LABEL_PATH, "rb").read())
+        self.unlock_counter = 0
+        self.labels = []
         self.mode_2 = 2
 
+
+    def secure_function_2(self):
+        cut, face_existence, bb = self.detect_function(self.image)
+        if face_existence:
+            image = cv2.resize(cut, configure.INPUT_SIZE, interpolation=cv2.INTER_CUBIC)
+            image = img_to_array(image)
+            image = np.array(image, dtype="float32")
+            image = image.reshape([1, 224, 224, 3])
+            pred = self.model.predict(image)
+            pred_index = np.argmax(pred, axis=1)
+            prob = pred[:, pred_index]
+            if prob >= 0.8:
+                label = self.lb.classes_[pred_index]
+            else:
+                label = 'Unknown'
+            self.labels.append(label)
+            y1 = bb[1]
+            y2 = bb[3]
+            x1 = bb[0]
+            x2 = bb[2]
+            cv2.rectangle(self.image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            y = y1 - 10 if y1 - 10 > 10 else y1 + 10
+            text = "{}: {}%".format(label, prob * 100)
+            cv2.putText(self.image, text, (x1, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
     def facenet_compare_stop_function_2(self):
-        None
+        self.mode_2 = 0
+        self.ui.Lock_Lb_2.setText("Locked")
+        self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
+        # self.timer.stop()
 
     def viewcam4(self):
         ret, self.image = self.cap.read()
@@ -368,28 +434,22 @@ class MainWindow(QMainWindow):
                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
             elif self.mode_2 == 2:
-                clone = self.image.copy()
-                cut, face_existence, bb = self.detect_function(clone)
-                image = cv2.resize(cut, configure.INPUT_SIZE, interpolation=cv2.INTER_CUBIC)
-                image = img_to_array(image)
-                image = np.array(image, dtype="float32")
-                image = image.reshape([1, 224, 224, 3])
-                pred = self.model.predict(image)
-                pred_index = np.argmax(pred, axis=1)
-                prob = pred[:, pred_index]
-                if prob >= 0.8:
-                    label = self.lb.classes_[pred_index]
-                else:
-                    label = 'Unknown'
-                y1 = bb[1]
-                y2 = bb[3]
-                x1 = bb[0]
-                x2 = bb[2]
-                cv2.rectangle(self.image, (x1, y1), (x2, y2), (0, 0, 255), 2)
-                y = y1 - 10 if y1 - 10 > 10 else y1 + 10
-                text = "{}: {}%".format(label, prob * 100)
-                cv2.putText(self.image, text, (x1, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+                self.secure_function_2()
+                self.unlock_counter += 1
+                if self.unlock_counter >= 40:
+                    self.unlock_counter = 0
+                    counter = Counter(self.labels)
+                    max_value = max(counter.values())
+                    max_key = [k for k, v in counter.items() if v == max_value]
+                    if (max_key[0] != 'Unknown') and (max_value >= 30):
+                        self.label = max_key
+                        self.ui.Lock_Lb_2.setText("Unlocked")
+                        self.COUNTER = 0
+                        self.TOTAl = 0
+                        self.mode = 3
+            elif self.mode_2 == 3:
+                self.blinking_function()
+
             self.showImage()
             self.checkFPS()
 
@@ -424,19 +484,6 @@ class MainWindow(QMainWindow):
         yhat = model_.predict(sample)
         return yhat[0]
 
-    def facenet_compare_setup_function(self):
-        self.class_names = os.listdir(configure.USER)
-        self.embeddings = []
-        for class_name in self.class_names:
-            print(class_name)
-            imagePaths = os.path.sep.join([configure.USER, class_name])
-            imagePaths = list(paths.list_images(imagePaths))
-            image = cv2.imread(imagePaths[0])
-            # image = np.resize(image, (160, 160, 3))
-            pre_whitened = facenet.prewhiten(image)
-            embedding = self.get_embedding(self.model_facenet, pre_whitened)
-            self.embeddings.append(embedding)
-
     def facenet_compare_function(self):
         self.class_names = os.listdir(configure.USER)
         self.embeddings = []
@@ -449,7 +496,8 @@ class MainWindow(QMainWindow):
             pre_whitened = facenet.prewhiten(image)
             embedding = self.get_embedding(self.model_facenet, pre_whitened)
             self.embeddings.append(embedding)
-
+        self.unlock_counter = 0
+        self.labels = []
         self.mode = 1
 
     def secure_function(self):
@@ -480,42 +528,22 @@ class MainWindow(QMainWindow):
             cv2.putText(self.image, text, (x1, y),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
-    def blinking_function(self):
-
-        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-        rects = self.detector(gray, 0)
-        for rect in rects:
-            shape = self.predictor(gray, rect)
-            shape = face_utils.shape_to_np(shape)
-            leftEye = shape[self.lStart:self.lEnd]
-            rightEye = shape[self.rStart:self.rEnd]
-            leftEAR = self.eye_aspect_ratio(leftEye)
-            rightEAR = self.eye_aspect_ratio(rightEye)
-            ear = (leftEAR + rightEAR) / 2.0
-            leftEyeHull = cv2.convexHull(leftEye)
-            rightEyeHull = cv2.convexHull(rightEye)
-            cv2.drawContours(self.image, [leftEyeHull], -1, (0, 255, 0), 1)
-            cv2.drawContours(self.image, [rightEyeHull], -1, (0, 255, 0), 1)
-            if ear < self.EYE_AR_THRESH:
-                self.COUNTER += 1
-                if self.COUNTER >= 200:
-                    cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (100, 50),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-            else:
-                if self.COUNTER >= self.EYE_AR_CONSEC_FRAMES:
-                    self.TOTAL += 1
-                self.COUNTER = 0
-            cv2.putText(self.image, "Blinks: {}".format(self.TOTAL), (10, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-            cv2.putText(self.image, "EAR: {:.2f}".format(ear), (250, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-            cv2.putText(self.image, "USER: {}".format(self.label), (10, 70),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    def facenet_compare_setup_function(self):
+        self.class_names = os.listdir(configure.USER)
+        self.embeddings = []
+        for class_name in self.class_names:
+            print(class_name)
+            imagePaths = os.path.sep.join([configure.USER, class_name])
+            imagePaths = list(paths.list_images(imagePaths))
+            image = cv2.imread(imagePaths[0])
+            # image = np.resize(image, (160, 160, 3))
+            pre_whitened = facenet.prewhiten(image)
+            embedding = self.get_embedding(self.model_facenet, pre_whitened)
+            self.embeddings.append(embedding)
 
     def facenet_compare_stop_function(self):
         self.mode = 0
         self.ui.Lock_Lb.setText("Locked")
-        self.TOTAL = 0
         self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
         # self.timer.stop()
 
@@ -541,9 +569,11 @@ class MainWindow(QMainWindow):
                     max_value = max(counter.values())
                     max_key = [k for k, v in counter.items() if v == max_value]
                     if (max_key[0] != 'Unknown') and (max_value >= 30):
-                        self.mode = 2
                         self.label = max_key
                         self.ui.Lock_Lb.setText("Unlocked")
+                        self.COUNTER = 0
+                        self.TOTAl = 0
+                        self.mode = 2
 
             elif self.mode == 2:
                 self.blinking_function()
@@ -591,7 +621,7 @@ class MainWindow(QMainWindow):
 
         if not self.timer.isActive():
             clip_path = "clip/Chau.mp4"
-            self.cap = cv2.VideoCapture(0)
+            self.cap = cv2.VideoCapture(self.filename)
             # self.cap = cv2.VideoCapture(self.filename)
             self.timer.start(30)
             self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPause))

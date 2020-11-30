@@ -4,6 +4,7 @@ import configure
 import numpy as np
 from imutils import paths
 import argparse
+from time import sleep
 
 
 ap = argparse.ArgumentParser()
@@ -19,7 +20,7 @@ if not os.path.exists(path):
     os.makedirs(path)
 imagePath = os.path.sep.join([path, filename])
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("clip/Nghia.mp4")
 
 while True:
     ret, frame = cap.read()
@@ -60,7 +61,5 @@ while True:
             bb[3] = np.minimum(det[3] + margin / 2, frame.shape[0])
             aligned = frame[bb[1]:bb[3], bb[0]:bb[2], :]
             break
-
+    sleep(0.1)
 cv2.imwrite(imagePath, aligned)
-cv2.destroyAllWindows()
-cap.stop()
