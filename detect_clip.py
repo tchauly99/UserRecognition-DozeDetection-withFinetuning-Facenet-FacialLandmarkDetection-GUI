@@ -5,8 +5,13 @@ import pickle
 import cv2
 import configure
 from mtcnn.mtcnn import MTCNN
+import argparse
 
-clip_path = "clip/Chau.mp4"
+ap = argparse.ArgumentParser()
+ap.add_argument("-c", "--clip", required=True, help="path to video clip")
+args = vars(ap.parse_args())
+
+clip_path = args["clip"]
 cap = cv2.VideoCapture(clip_path)
 # detector = MTCNN()
 faceCascade = cv2.CascadeClassifier(configure.HAAR_PATH)
@@ -46,7 +51,7 @@ while True:
     pred = model.predict(image)
     pred_index = np.argmax(pred, axis=1)
     prob = pred[:, pred_index]
-    if prob >= 0.5:
+    if prob >= 0.8:
         label = lb.classes_[pred_index]
     else:
         label = 'Unknown'

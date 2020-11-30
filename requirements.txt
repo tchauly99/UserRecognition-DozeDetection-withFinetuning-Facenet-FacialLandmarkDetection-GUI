@@ -1,0 +1,14 @@
+numpy
+tensorflow
+pyqt5
+PyQt5Designer
+pyqt5-tools
+pandas
+opencv-contrib-python
+sklearn
+matplotlib
+scipy
+imutils
+scikit-learn
+argparse
+mtcnn

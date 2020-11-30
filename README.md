@@ -1,7 +1,8 @@
 # AI_TGM
 Repo to refer further: https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a
 
-Download code: $git clone https://github.com/tchauly99/AI_TGM.git
+Download code: 
+ * $git clone https://github.com/tchauly99/AI_TGM.git
 
 Create and activate your virtual environment:
  * $pip install virtualenv
@@ -19,9 +20,6 @@ Refer how to download dlib here (for Windows):
 
 Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here:
  * https://developpaper.com/pycharm-qt-designer-pyuic-installation-and-configuration-tutorial-details/
-
-Deactivate virtual enironment after use:
- * $deactivate
 	
 Models to download:
 
@@ -32,7 +30,55 @@ Models to download:
  * haarcascade_frontalface_default.xml: https://gist.github.com/Learko/8f51e58ac0813cb695f3733926c77f52
  
  * shape_predictor_68_face_landmarks.dat: https://osdn.net/projects/sfnet_dclib/downloads/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2/
-          
+
+Deactivate virtual enironment after use:
+ * $deactivate
+
+Download Pycharm Community (recommended):
+ * https://www.jetbrains.com/pycharm/download/#section=windows
+
+**GUIDELINES:
+**Using facenet embeddings:
+
+We need an image of every reference user - Press "q" on the keyboard will take a photo at the moment of %user name% into users/%user name%
+ * $python add_user.py -u %user name%
+
+Perform face similarity recognition for images from webcam - Press "q" on the keyboard to terminate:
+ * $python facenet_compare.py 
+
+**Train SVM on facenet embeddings for face recognition:
+
+Train SVM on dataset from folder **dataset (can be modified to folder **dataset_fromclip in source code):
+ * $python fine_tuning_facenet.py
+
+Perform face recognition for images from webcam - Press "q" on the keyboard to terminate:
+ *  $python detect_clip2.py
+
+**Fine tune a model for face recognition:
+
+We need a dataset of face-cut and aligned images of every user inside folder **dataset, during the process, folder **dataset_raw may contain raw images
+Get images of each user from webcam into dataset_raw/%user name%:
+ *  $python get_video.py -u %user name%
+ 
+Generate dataset into dataset/%user name% for all images in folder **dataset_raw:
+ *  $python common_dataset.py 
+
+Get dataset from clips in folder **clips - Generate dataset into dataset_fromclip/%clip name% for every %clip name%:
+ *  $python common_dataset.py -u %clip name% %clip name% %clip name%... -ic True
+
+Fine-tune **ResNet50 - **Imagenet on dataset from folder **dataset (can be modified to folder **dataset_fromclip in source code), output model, label and evaluation plot into folder **output:
+ *  $python fine_tuning.py 
+
+Perform face recognition for images from webcam - Press "q" on the keyboard to terminate:
+ *  $python detect_cam.py
+ 
+Perform face recognition for images from clip - Press "q" on the keyboard to terminate:
+ *  $python detect_clip.py  -c %clip path%
+ 
+**Detect drowness through blinking:
+ *  $python blinking.py
+
+
 <pre>         
 .
 ├── clip
