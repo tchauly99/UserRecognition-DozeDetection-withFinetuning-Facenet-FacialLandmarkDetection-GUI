@@ -62,7 +62,12 @@ aug = ImageDataGenerator(
     fill_mode="nearest")
 print("[INFO] preparing model...")
 
-baseModel = ResNet50(weights="imagenet",
+if os.path.exists(configure.RESNET50_WEIGHTS_PATH):
+    weights = configure.RESNET50_WEIGHTS_PATH
+else:
+    weights = 'imagenet'
+
+baseModel = ResNet50(weights=weights,
                      include_top=False, input_tensor=Input(shape=(224, 224, 3)))
 
 headModel = baseModel.output
@@ -103,6 +108,9 @@ print("[INFO] evaluating network...")
 pred = model.predict(testX, batch_size=BS)
 pred_index = np.argmax(pred, axis=1)
 print(classification_report(testY.argmax(axis=1), pred_index, target_names=lb.classes_))
+
+if not os.path.exists(configure.OUTPUT_PATH):
+    os.makedirs(configure.OUTPUT_PATH)
 
 print("[INFO] saving model...")
 model.save(configure.MODEL_PATH, save_format="h5")

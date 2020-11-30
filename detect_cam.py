@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 import cv2
 import configure
-from mtcnn.mtcnn import MTCNN
 
 cap = cv2.VideoCapture(0)
 # detector = MTCNN()
@@ -42,10 +41,16 @@ while True:
         areas.append(area)
     j = np.argmax(areas)
     bounding_box = faces[j]
-    x1 = bounding_box[0]
-    x2 = bounding_box[0] + bounding_box[2]
-    y1 = bounding_box[1]
-    y2 = bounding_box[1] + bounding_box[3]
+    det = np.zeros(4, dtype=np.int32)
+    det[0] = bounding_box[0]
+    det[2] = bounding_box[0] + bounding_box[2]
+    det[1] = bounding_box[1]
+    det[3] = bounding_box[1] + bounding_box[3]
+    cut = frame[det[1]:det[3], det[0]:det[2], :]
+    y1 = det[1]
+    y2 = det[3]
+    x1 = det[0]
+    x2 = det[2]
     image = frame[y1:y2, x1:x2]
     image = cv2.resize(image, configure.INPUT_SIZE, interpolation=cv2.INTER_CUBIC)
     image = img_to_array(image)

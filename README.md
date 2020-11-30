@@ -3,23 +3,23 @@ Repo to refer: https://medium.com/@athul929/building-a-facial-recognition-system
 
 Download code: git clone https://github.com/tchauly99/AI_TGM.git
 
-Activate your virtualenv:
-	pip install virtualenv
-	[cd to your Project path]
-	virtualenv AI_TGM_venv
-	source AI_TGM_venv/bin/activate (on Linux)
-		or AI_TGM_venv\Scripts\activate (on Windows)
+Create and activate your virtual environment:
+ * pip install virtualenv
+ * [cd to your Project path]
+ * virtualenv AI_TGM_venv
+ * source AI_TGM_venv/bin/activate (on Linux) or AI_TGM_venv\Scripts\activate (on Windows)
 		
 Install packages: pip install -r requirements.txt
 
 Refer how to download dlib here (for Windows):
+ * https://www.geeksforgeeks.org/how-to-install-cmake-for-windows-in-python/
  * https://medium.com/analytics-vidhya/how-to-install-dlib-library-for-python-in-windows-10-57348ba1117f
  * or here (for Linux): https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
 
 Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here:
  * https://developpaper.com/pycharm-qt-designer-pyuic-installation-and-configuration-tutorial-details/
 
-Deactivate it after use:
+Deactivate virtual enironment after use:
  * deactivate
 	
 Models to download:
@@ -29,6 +29,8 @@ Models to download:
  * facenet_keras.h5: https://drive.google.com/drive/folders/12aMYASGCKvDdkygSv1yQq8ns03AStDO_ or https://www.kaggle.com/suicaokhoailang/facenet-keras
 
  * haarcascade_frontalface_default.xml: https://gist.github.com/Learko/8f51e58ac0813cb695f3733926c77f52
+ 
+ * shape_predictor_68_face_landmarks.dat: https://osdn.net/projects/sfnet_dclib/downloads/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2/
           
 <pre>         
 .

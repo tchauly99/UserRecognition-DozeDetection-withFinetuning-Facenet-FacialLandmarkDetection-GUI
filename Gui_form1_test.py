@@ -108,7 +108,7 @@ class MainWindow(QMainWindow):
 
         self.ui.DeleteUser_Btn_3.clicked.connect(self.delete_user_function)
         self.ui.Capture_Btn_3.clicked.connect(self.add_user_function_2)
-        # self.ui.Train_Btn.clicked.connect(self.train_function)
+        self.ui.Train_Btn.clicked.connect(self.train_function)
         self.ui.Start_Btn_2.clicked.connect(self.compare_function_2)
         self.ui.Stop_Btn_2.clicked.connect(self.facenet_compare_stop_function_2)
 
@@ -179,13 +179,12 @@ class MainWindow(QMainWindow):
             det[1] = bounding_box[1]
             det[3] = bounding_box[1] + bounding_box[3]
             cut = image[det[1]:det[3], det[0]:det[2], :]
-            return cut, 1, bb
+            return cut, 1, det
         else:
             cut = image
             return cut, 0, 0
 
     def blinking_function(self):
-
         gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         rects = self.detector(gray, 0)
         for rect in rects:
@@ -204,17 +203,17 @@ class MainWindow(QMainWindow):
                 self.COUNTER += 1
                 if self.COUNTER >= 200:
                     cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (100, 50),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
             else:
                 if self.COUNTER >= self.EYE_AR_CONSEC_FRAMES:
                     self.TOTAL += 1
                 self.COUNTER = 0
             cv2.putText(self.image, "Blinks: {}".format(self.TOTAL), (10, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (235, 155, 0), 1)
             cv2.putText(self.image, "EAR: {:.2f}".format(ear), (250, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (125, 233, 90), 1)
             cv2.putText(self.image, "USER: {}".format(self.label), (10, 70),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (120, 190, 122), 1)
 
     def main_widget_function(self):
         if self.ui.tabWidget.currentIndex() == 0:
@@ -309,14 +308,17 @@ class MainWindow(QMainWindow):
             horizontal_flip=True,
             fill_mode="nearest")
         print("[INFO] preparing model...")
+        if os.path.exists(configure.RESNET50_WEIGHTS_PATH):
+            weights = configure.RESNET50_WEIGHTS_PATH
+        else:
+            weights = 'imagenet'
 
-        baseModel = ResNet50(weights='imagenet',
+        baseModel = ResNet50(weights=weights,
                              include_top=False, input_tensor=Input(shape=(224, 224, 3)))
-
         headModel = baseModel.output
-        headModel = AveragePooling2D(pool_size=(2, 2))(headModel)
+        headModel = AveragePooling2D(pool_size=(7, 7))(headModel)
         headModel = Flatten(name="flatten")(headModel)
-        headModel = Dense(128 * 2 * 2, activation="relu")(headModel)
+        headModel = Dense(128 * 7 * 7, activation="relu")(headModel)
         headModel = Dropout(0.5)(headModel)
         headModel = Dense(num_classes, activation="softmax")(headModel)
 
@@ -387,7 +389,7 @@ class MainWindow(QMainWindow):
             pred_index = np.argmax(pred, axis=1)
             prob = pred[:, pred_index]
             if prob >= 0.8:
-                label = self.lb.classes_[pred_index]
+                label = self.lb.classes_[pred_index][0]
             else:
                 label = 'Unknown'
             self.labels.append(label)
@@ -399,7 +401,8 @@ class MainWindow(QMainWindow):
             y = y1 - 10 if y1 - 10 > 10 else y1 + 10
             text = "{}: {}%".format(label, prob * 100)
             cv2.putText(self.image, text, (x1, y),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+            self.unlock_counter += 1
 
     def facenet_compare_stop_function_2(self):
         self.mode_2 = 0
@@ -435,18 +438,22 @@ class MainWindow(QMainWindow):
 
             elif self.mode_2 == 2:
                 self.secure_function_2()
-                self.unlock_counter += 1
+
                 if self.unlock_counter >= 40:
                     self.unlock_counter = 0
+                    print(self.labels)
                     counter = Counter(self.labels)
                     max_value = max(counter.values())
+                    print(max_value)
                     max_key = [k for k, v in counter.items() if v == max_value]
-                    if (max_key[0] != 'Unknown') and (max_value >= 30):
+                    self.labels = []
+                    print(max_key[0])
+                    if (max_key[0] != 'Unknown') and (max_value >= 26):
                         self.label = max_key
                         self.ui.Lock_Lb_2.setText("Unlocked")
                         self.COUNTER = 0
                         self.TOTAl = 0
-                        self.mode = 3
+                        self.mode_2 = 3
             elif self.mode_2 == 3:
                 self.blinking_function()
 
@@ -526,7 +533,7 @@ class MainWindow(QMainWindow):
             y = y1 - 10 if y1 - 10 > 10 else y1 + 10
             text = "{}: {}%".format(label, prob)
             cv2.putText(self.image, text, (x1, y),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
     def facenet_compare_setup_function(self):
         self.class_names = os.listdir(configure.USER)
@@ -565,9 +572,11 @@ class MainWindow(QMainWindow):
                 self.unlock_counter += 1
                 if self.unlock_counter >= 40:
                     self.unlock_counter = 0
+                    print(self.labels)
                     counter = Counter(self.labels)
                     max_value = max(counter.values())
                     max_key = [k for k, v in counter.items() if v == max_value]
+                    self.labels = []
                     if (max_key[0] != 'Unknown') and (max_value >= 30):
                         self.label = max_key
                         self.ui.Lock_Lb.setText("Unlocked")
@@ -613,22 +622,26 @@ class MainWindow(QMainWindow):
     def checkFPS(self):
         self.time1 = datetime.now().microsecond
         deltime = self.time1 - self.time0
-        print(int(round(1000000 / deltime)))
-        self.time0 = self.time1
+        # if deltime != 0:
+        #     print(int(round(1000000 / deltime)))
+        # self.time0 = self.time1
 
     def controlTimer(self):
         self.time0 = datetime.now().microsecond
 
         if not self.timer.isActive():
             clip_path = "clip/Chau.mp4"
-            self.cap = cv2.VideoCapture(self.filename)
+            self.cap = cv2.VideoCapture(0)
             # self.cap = cv2.VideoCapture(self.filename)
-            self.timer.start(30)
+            self.timer.start(40)
             self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPause))
         else:
             self.timer.stop()
             self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
-
+        if (self.ui.tabWidget.currentIndex() == 0):
+            self.timer.timeout.connect(self.viewcam3)
+        else:
+            self.timer.timeout.connect(self.viewcam4)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
