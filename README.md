@@ -1,15 +1,16 @@
 # AI_TGM
-Repo to refer: https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a
+Repo to refer further: https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a
 
-Download code: git clone https://github.com/tchauly99/AI_TGM.git
+Download code: $git clone https://github.com/tchauly99/AI_TGM.git
 
 Create and activate your virtual environment:
- * pip install virtualenv
- * [cd to your Project path]
- * virtualenv AI_TGM_venv
- * source AI_TGM_venv/bin/activate (on Linux) or AI_TGM_venv\Scripts\activate (on Windows)
+ * $pip install virtualenv
+ * $cd %Project path%
+ * $virtualenv AI_TGM_venv
+ * $source AI_TGM_venv/bin/activate (on Linux) or $AI_TGM_venv\Scripts\activate (on Windows)
 		
-Install packages: pip install -r requirements.txt
+Install packages: 
+ * $pip install -r requirements.txt
 
 Refer how to download dlib here (for Windows):
  * https://www.geeksforgeeks.org/how-to-install-cmake-for-windows-in-python/
@@ -20,11 +21,11 @@ Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here:
  * https://developpaper.com/pycharm-qt-designer-pyuic-installation-and-configuration-tutorial-details/
 
 Deactivate virtual enironment after use:
- * deactivate
+ * $deactivate
 	
 Models to download:
 
- * resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5: https://github.com/fchollet/deep-learning-models/releases
+ * resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5 (not necessary): https://github.com/fchollet/deep-learning-models/releases
 
  * facenet_keras.h5: https://drive.google.com/drive/folders/12aMYASGCKvDdkygSv1yQq8ns03AStDO_ or https://www.kaggle.com/suicaokhoailang/facenet-keras
 
