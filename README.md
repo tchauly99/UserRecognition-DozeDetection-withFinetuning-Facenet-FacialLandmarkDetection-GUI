@@ -1,15 +1,25 @@
 # AI_TGM
 Repo to refer further: https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a
 
+_**Description**_: 
+ * Face detection uses flexibly between **Haar-Cascade** and **Multi-task Cascaded CNN** (MTCNN) method (library available), only the first one is used in GUI.
+ * This repo perform face recognition using 3 approachs:
+ 	* Use **Facenet** model (facenet_keras.h5) to extract embedding vectors from images, compare those vectors between input image and reference images using **cosine** method to detect face matching. (1)
+ 	* Train a **Support Vector Machine** (SVM) classifier (with library from sklearn) on embedding vectors extracted from **Facenet**. (2)
+ 	* Fine-tune (tensorflow - keras) available model structure **ResNet50** with weights from training on dataset **Imagenet** to adapt the model's classifier to our dataset (disable the top layers and add ours). (https://www.pyimagesearch.com/2019/06/03/fine-tuning-with-keras-and-deep-learning/, https://www.pyimagesearch.com/2020/04/27/fine-tuning-resnet-with-keras-tensorflow-and-deep-learning/) (3)
+ * Detect user's drowness from eye-blinking counting, using **facial landmarks** extracted by **dlib**. (4)(https://pyimagesearch.com/2017/04/03/facial-landmarks-dlib-opencv-python/, https://www.pyimagesearch.com/2017/04/17/real-time-facial-landmark-detection-opencv-python-dlib/, https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/)
+ * Develop a user interface (GUI) to perform the tasks **1, 3, 4** using **PyQt5**.
+ * All the seperate source code files can be executed independently to perform seperate tasks, but they are finally combined into Gui_form_test.py to be executed with ease via GUI.
+ 
 Recommended **Python** version: **3.6**
 
 If any error during installing packages, consider Python version.
 
 Install **pip**
 
-Recommended terminal : **Cmder**, **Git Bash**
+Recommended terminal for Windows users: **Cmder**, **Git Bash**
 
-Download Pycharm Community (recommended):
+Download IDE Pycharm Community (recommended):
  * https://www.jetbrains.com/pycharm/download/#section=windows
 
 Download code: 
@@ -19,7 +29,7 @@ Create and activate your virtual environment (recommended): geeksforgeeks.org/cr
  * $pip install virtualenv
  * [open terminal in your %Project path%]
  * $virtualenv AI_TGM_venv
- * $source AI_TGM_venv/bin/activate (on Linux) or $AI_TGM_venv\Scripts\activate (on Windows)
+ * $source AI_TGM_venv/bin/activate **(on Linux)** or $AI_TGM_venv\Scripts\activate **(on Windows)**
 		
 Install packages: 
  * $pip install -r requirements.txt
@@ -28,13 +38,13 @@ Refer how to download dlib here (for Windows):
  * https://www.geeksforgeeks.org/how-to-install-cmake-for-windows-in-python/
  * https://medium.com/analytics-vidhya/how-to-install-dlib-library-for-python-in-windows-10-57348ba1117f
  * or here (for Linux): https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
-
-Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here:
+ 
+Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here: 
  * https://developpaper.com/pycharm-qt-designer-pyuic-installation-and-configuration-tutorial-details/
-	
-Models to download:
 
- * resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5 (not necessary): https://github.com/fchollet/deep-learning-models/releases
+Models to download into folder **models**:
+
+ * resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5 (just in case of error, because if not downloaded manually, it will still be auto-downloaded): https://github.com/fchollet/deep-learning-models/releases
 
  * facenet_keras.h5: https://drive.google.com/drive/folders/12aMYASGCKvDdkygSv1yQq8ns03AStDO_ or https://www.kaggle.com/suicaokhoailang/facenet-keras
 
@@ -45,7 +55,7 @@ Models to download:
 Deactivate virtual enironment after use:
  * $deactivate
 
-**GUIDELINES**:
+**GUIDELINES for seperate little source code files**:
 
 _**Using facenet embeddings**_:
 
@@ -87,7 +97,7 @@ Perform face recognition for images from clip - Press **"q"** on the keyboard to
 _**Detect drowness through blinking**_:
  *  $python blinking.py
 
-_**GUI**_:
+_**GUILDLINES for GUI**_:
 
 $python Gui_form1_test.py
 
@@ -113,6 +123,7 @@ $python Gui_form1_test.py
  * Press **Start** to start the process.
  * Press **Stop** to terminate the process.
 
+**Dir tree**
 <pre>         
 .
 ├── clip
