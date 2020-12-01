@@ -88,6 +88,9 @@ _**Detect drowness through blinking**_:
  *  $python blinking.py
 
 _**GUI**_:
+
+$python Gui_form1_test.py
+
 # Facenet tab
 ![Facenet](/images/Facenet.png)
 
