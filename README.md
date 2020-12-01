@@ -81,7 +81,7 @@ _**Detect drowness through blinking**_:
 
 _**GUI**_:
 # Facenet tab
-![Dlib](/images/Dlib.png)
+![Facenet](/images/Facenet.png)
 
  * Press **Play** button to start displaying images captured from webcam, you can **Pause** anytime
  * Input %user name% into the **Text box**.
@@ -91,7 +91,7 @@ _**GUI**_:
  * Press **Stop** to terminate the process.
  
 # Finetune tab
-![Manual](/images/Manual.png)
+![Finetune](/images/Finetune.png)
 
  * Press **Play** button to start displaying images captured from webcam, you can **Pause** anytime.
  * Input %user name% into the **Text box**

@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(100, 70, 811, 531))
+        self.tabWidget.setGeometry(QtCore.QRect(110, 110, 671, 531))
         self.tabWidget.setObjectName("tabWidget")
         self.Dlib = QtWidgets.QWidget()
         self.Dlib.setObjectName("Dlib")
@@ -183,7 +183,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuEdit.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -197,7 +197,7 @@ class Ui_MainWindow(object):
         self.username_Tb.setText(_translate("MainWindow", "Chau"))
         self.LeftTimeLabel.setText(_translate("MainWindow", "TextLabel"))
         self.DeleteUser_Btn.setText(_translate("MainWindow", "Delete User"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Dlib), _translate("MainWindow", "Dlib"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Dlib), _translate("MainWindow", "Facenet"))
         self.LeftTimeLabel_2.setText(_translate("MainWindow", "TextLabel"))
         self.Stop_Btn_2.setText(_translate("MainWindow", "Stop"))
         self.Start_Btn_2.setText(_translate("MainWindow", "Start"))
@@ -208,7 +208,7 @@ class Ui_MainWindow(object):
         self.Lock_Lb_2.setText(_translate("MainWindow", "Locked"))
         self.Gen_Btn_3.setText(_translate("MainWindow", "Generate"))
         self.Train_Btn.setText(_translate("MainWindow", "Train Model"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Manual), _translate("MainWindow", "Manual"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Manual), _translate("MainWindow", "Finetune"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
