@@ -1,10 +1,9 @@
 # AI_TGM
-Repo to refer further: https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a
 
 _**Description**_: 
  * Face detection uses flexibly between **Haar-Cascade** and **Multi-task Cascaded CNN** (MTCNN) method (library available), only the first one is used in GUI.
  * This repo perform face recognition using 3 approachs:
- 	* Use **Facenet** model (facenet_keras.h5) to extract embedding vectors from images, compare those vectors between input image and reference images using **cosine** method to detect face matching. (1)
+ 	* Use **Facenet** model (facenet_keras.h5) to extract embedding vectors from images, compare those vectors between input image and reference images using **cosine** method to detect face matching. (1) (https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a)
  	* Train a **Support Vector Machine** (SVM) classifier (with library from sklearn) on embedding vectors extracted from **Facenet**. (2)
  	* Fine-tune (tensorflow - keras) available model structure **ResNet50** with weights from training on dataset **Imagenet** to adapt the model's classifier to our dataset (disable the top layers and add ours). (https://www.pyimagesearch.com/2019/06/03/fine-tuning-with-keras-and-deep-learning/, https://www.pyimagesearch.com/2020/04/27/fine-tuning-resnet-with-keras-tensorflow-and-deep-learning/) (3)
  * Detect user's drowness from eye-blinking counting, using **facial landmarks** extracted by **dlib**. (4)(https://pyimagesearch.com/2017/04/03/facial-landmarks-dlib-opencv-python/, https://www.pyimagesearch.com/2017/04/17/real-time-facial-landmark-detection-opencv-python-dlib/, https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/)
