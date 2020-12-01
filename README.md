@@ -1,6 +1,15 @@
 # AI_TGM
 Repo to refer further: https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a
 
+Recommended **Python** version: **3.6**
+
+Install **pip**
+
+Recommended terminal : **Cmder**, **Git Bash**
+
+Download Pycharm Community (recommended):
+ * https://www.jetbrains.com/pycharm/download/#section=windows
+
 Download code: 
  * $git clone https://github.com/tchauly99/AI_TGM.git
 
@@ -33,9 +42,6 @@ Models to download:
 
 Deactivate virtual enironment after use:
  * $deactivate
-
-Download Pycharm Community (recommended):
- * https://www.jetbrains.com/pycharm/download/#section=windows
 
 **GUIDELINES**:
 
