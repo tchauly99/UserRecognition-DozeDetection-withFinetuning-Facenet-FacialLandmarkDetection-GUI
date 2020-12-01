@@ -7,8 +7,8 @@ _**Description**_:
  	* Train a **Support Vector Machine** (SVM) classifier (with library from sklearn) on embedding vectors extracted from **Facenet**. (2)
  	* Fine-tune (tensorflow - keras) available model structure **ResNet50** with weights from training on dataset **Imagenet** to adapt the model's classifier to our dataset (disable the top layers and add ours). (https://www.pyimagesearch.com/2019/06/03/fine-tuning-with-keras-and-deep-learning/, https://www.pyimagesearch.com/2020/04/27/fine-tuning-resnet-with-keras-tensorflow-and-deep-learning/) (3)
  * Detect user's drowness from eye-blinking counting, using **facial landmarks** extracted by **dlib**. (4)(https://pyimagesearch.com/2017/04/03/facial-landmarks-dlib-opencv-python/, https://www.pyimagesearch.com/2017/04/17/real-time-facial-landmark-detection-opencv-python-dlib/, https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/)
- * Develop a user interface (GUI) to perform the tasks **1, 3, 4** using **PyQt5**.
- * All the seperate source code files can be executed independently to perform seperate tasks, but they are finally combined into Gui_form_test.py to be executed with ease via GUI.
+ * Develop a user interface (GUI) to perform the tasks **1, 3, 4** using **PyQt5** to compare between the two method **1** and **3**.
+ * All the seperate source code files can be executed independently to perform seperate tasks, but they are finally combined into **Gui_form_test.py** to be executed with ease via GUI.
  
 Recommended **Python** version: **3.6**
 
