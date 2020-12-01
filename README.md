@@ -37,7 +37,7 @@ Deactivate virtual enironment after use:
 Download Pycharm Community (recommended):
  * https://www.jetbrains.com/pycharm/download/#section=windows
 
-_**GUIDELINES**_:
+**GUIDELINES**:
 
 _**Using facenet embeddings**_:
 
@@ -76,9 +76,22 @@ Perform face recognition for images from webcam - Press "q" on the keyboard to t
 Perform face recognition for images from clip - Press "q" on the keyboard to terminate:
  *  $python detect_clip.py  -c %clip path%
  
-**Detect drowness through blinking**:
+_**Detect drowness through blinking**_:
  *  $python blinking.py
 
+_**GUI**_:
+# Dlib tab
+![Dlib](/images/Dlib.png)
+
+ * Press **Play** button to start display images captured from webcam, you can **Pause** anytime
+ * Input %user name% into the **Text box**
+ * Press **Capture** to take a picture of %user name% which will be saved into **users/%user name%** for reference.
+ * All user names existing will be placed in the **Combo box**, select a user name out of them and press **Delete User** to delete it from source.
+ * Press **Start** to start the process. If the person in front of the camera is recognized as one of the users for 26 frames out of 40 consecutive frames, drowness detection function will be unlocked (the state is displayed). 
+ * Press **Stop** to terminate the process.
+ 
+# Manual tab
+![Manual](/images/Manual.png)
 
 <pre>         
 .
