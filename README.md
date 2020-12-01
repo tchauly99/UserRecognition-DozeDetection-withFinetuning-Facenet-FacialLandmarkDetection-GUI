@@ -3,6 +3,8 @@ Repo to refer further: https://medium.com/@athul929/building-a-facial-recognitio
 
 Recommended **Python** version: **3.6**
 
+If any error during installing packages, consider Python version.
+
 Install **pip**
 
 Recommended terminal : **Cmder**, **Git Bash**
@@ -15,7 +17,7 @@ Download code:
 
 Create and activate your virtual environment:
  * $pip install virtualenv
- * $cd %Project path%
+ * [open terminal in your %Project path%]
  * $virtualenv AI_TGM_venv
  * $source AI_TGM_venv/bin/activate (on Linux) or $AI_TGM_venv\Scripts\activate (on Windows)
 		
