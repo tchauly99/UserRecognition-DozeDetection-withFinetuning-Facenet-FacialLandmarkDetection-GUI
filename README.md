@@ -37,8 +37,9 @@ Deactivate virtual enironment after use:
 Download Pycharm Community (recommended):
  * https://www.jetbrains.com/pycharm/download/#section=windows
 
-**GUIDELINES**:
-**Using facenet embeddings**:
+_**GUIDELINES**_:
+
+_**Using facenet embeddings**_:
 
 We need an image of every reference user - Press "q" on the keyboard will take a photo at the moment of %user name% into users/%user name%
  * $python add_user.py -u %user name%
@@ -46,7 +47,7 @@ We need an image of every reference user - Press "q" on the keyboard will take a
 Perform face similarity recognition for images from webcam - Press "q" on the keyboard to terminate:
  * $python facenet_compare.py 
 
-**Train SVM on facenet embeddings for face recognition**:
+_**Train SVM on facenet embeddings for face recognition**_:
 
 Train SVM on dataset from folder **dataset** (can be modified to folder **dataset_fromclip** in source code):
  * $python fine_tuning_facenet.py
@@ -54,7 +55,7 @@ Train SVM on dataset from folder **dataset** (can be modified to folder **datase
 Perform face recognition for images from webcam - Press "q" on the keyboard to terminate:
  *  $python detect_clip2.py
 
-**Fine tune a model for face recognition**:
+_**Fine tune a model for face recognition**_:
 
 We need a dataset of face-cut and aligned images of every user inside folder **dataset** or **dataset_fromclip**, during the process, folder **dataset_raw** or **datasetraw_fromclip** may contain raw images
 Get images of each user from webcam into dataset_raw/%user name%:
