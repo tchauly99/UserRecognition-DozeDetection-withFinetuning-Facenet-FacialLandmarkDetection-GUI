@@ -15,7 +15,7 @@ Download Pycharm Community (recommended):
 Download code: 
  * $git clone https://github.com/tchauly99/AI_TGM.git
 
-Create and activate your virtual environment:
+Create and activate your virtual environment (recommended): geeksforgeeks.org/creating-python-virtual-environment-windows-linux/
  * $pip install virtualenv
  * [open terminal in your %Project path%]
  * $virtualenv AI_TGM_venv
