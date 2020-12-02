@@ -10,7 +10,7 @@ _**Description**_:
  * Develop a user interface (GUI) to perform the tasks **1, 3, 4** using **PyQt5** to compare between the two method **1** and **3**.
  * All the seperate source code files can be executed independently to perform seperate tasks, but they are finally combined into **Gui_form_test.py** to be executed with ease via GUI.
 
-Windows OS is recommended for this project, there are some errors with executing GUI on Ubuntu that I've still not figured out how to fix.
+**Windows OS** is recommended for this project, there are some errors with executing GUI on Ubuntu that I've still not figured out how to fix.
 
 Recommended **Python** version: **3.6**
 
@@ -24,33 +24,33 @@ Download IDE **Pycharm Community** (recommended):
  * https://www.jetbrains.com/pycharm/download/#section=windows
 
 Download code: 
- * $git clone https://github.com/tchauly99/AI_TGM.git
+ * **$** git clone https://github.com/tchauly99/AI_TGM.git
 
 Create and activate your virtual environment (recommended): geeksforgeeks.org/creating-python-virtual-environment-windows-linux/
- * $pip install virtualenv
+ * **$** pip install virtualenv
  * [open terminal in your %Project path%]
- * $virtualenv AI_TGM_venv
- * $source AI_TGM_venv/bin/activate **(on Linux terminal)** or $AI_TGM_venv\Scripts\activate **(on Windows Cmd)** or $AI_TGM_venv\Scripts\activate **(on Windows GitBash)**
+ * **$** virtualenv AI_TGM_venv
+ * **$** source AI_TGM_venv/bin/activate **(on Linux terminal)** or **$** AI_TGM_venv\Scripts\activate **(on Windows Cmd)** or **$** $AI_TGM_venv\Scripts\activate **(on Windows GitBash)**
 		
 Install packages: 
  * [open terminal in your %Project path%]
- * $pip install -r requirements.txt
+ * **$** pip install -r requirements.txt
+ * **Addition for Windows**:  **$** pip install PyQt5Designer
 
 Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here (to dev GUI): 
  * https://developpaper.com/pycharm-qt-designer-pyuic-installation-and-configuration-tutorial-details/
  * Install PyQT5 Designer:
- 	* Windows:  $pip install PyQt5Designer
- 	* Ubuntu:   $sudo apt install pyqt5-dev-tools pyqt5-dev  (and you can find **designer.py** in **/usr/lib/x86_64-linux-gnu/qt5/bin/designer**) 
+ 	* Ubuntu:   **$** sudo apt install pyqt5-dev-tools pyqt5-dev  (and you can find **designer.py** in **/usr/lib/x86_64-linux-gnu/qt5/bin/designer**) 
 
 Refer how to download dlib (this might take a while, be patient!!!)
  * here (for Windows):
  	* https://www.geeksforgeeks.org/how-to-install-cmake-for-windows-in-python/
  	* https://medium.com/analytics-vidhya/how-to-install-dlib-library-for-python-in-windows-10-57348ba1117f
  * or here (for Linux - much easier): https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
-	* $ sudo apt-get install build-essential cmake
-	* $ sudo apt-get install libgtk-3-dev
-	* $ sudo apt-get install libboost-all-dev
-	* $ pip install dlib
+	* **$** sudo apt-get install build-essential cmake
+	* **$** sudo apt-get install libgtk-3-dev
+	* **$** sudo apt-get install libboost-all-dev
+	* **$** pip install dlib
 
 Models to download into folder **models**:
 
@@ -63,53 +63,53 @@ Models to download into folder **models**:
  * shape_predictor_68_face_landmarks.dat: https://osdn.net/projects/sfnet_dclib/downloads/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2/
 
 Deactivate virtual enironment after use:
- * $deactivate
+ * **$** deactivate
 
 **GUIDELINES for seperate little source code files**:
 
 _**Using facenet embeddings**_:
 
 We need an image of every reference user - Press **"q"** on the keyboard to take a photo at the moment of %user name% into users/%user name%
- * $python add_user.py -u %user name%
+ * **$** python add_user.py -u %user name%
 
 Perform face similarity recognition for images from webcam - Press **"q"** on the keyboard to terminate:
- * $python facenet_compare.py 
+ * **$** python facenet_compare.py 
 
 _**Train SVM on facenet embeddings for face recognition**_:
 
 Train SVM on dataset from folder **dataset** (can be modified to folder **dataset_fromclip** in source code):
- * $python fine_tuning_facenet.py
+ * **$** python fine_tuning_facenet.py
 
 Perform face recognition for images from webcam - Press **"q"** on the keyboard to terminate:
- *  $python detect_clip2.py
+ *  **$** python detect_clip2.py
 
 _**Fine tune a model for face recognition**_:
 
 We need a dataset of face-cut and aligned images of every user inside folder **dataset** or **dataset_fromclip**, during the process, folder **dataset_raw** or **datasetraw_fromclip** may contain raw images
 Get images of each user from webcam into dataset_raw/%user name%:
- *  $python get_video.py -u %user name%
+ *  **$** python get_video.py -u %user name%
  
 Generate dataset into dataset/%user name% for all images in folder **dataset_raw**:
- *  $python common_dataset.py 
+ *  **$** python common_dataset.py 
 
 Get dataset from clips in folder **clips** - Generate dataset into dataset_fromclip/%clip name% for every %clip name%:
- *  $python common_dataset.py -u %clip name% %clip name% %clip name%... -ic True
+ *  **$** python common_dataset.py -u %clip name% %clip name% %clip name%... -ic True
 
 Fine-tune **ResNet50** - **Imagenet** on dataset from folder **dataset** (can be modified to folder **dataset_fromcli**p in source code), output model, label and evaluation plot into folder **output**:
- *  $python fine_tuning.py (You may notice the process of training logging out on the terminal where you execute the file, watch how the loss and accuracy changes over each epoch).
+ *  **$** python fine_tuning.py (You may notice the process of training logging out on the terminal where you execute the file, watch how the loss and accuracy changes over each epoch).
 
 Perform face recognition for images from webcam - Press **"q"** on the keyboard to terminate:
- *  $python detect_cam.py
+ *  **$** python detect_cam.py
  
 Perform face recognition for images from clip - Press **"q"** on the keyboard to terminate:
- *  $python detect_clip.py  -c %clip path%
+ *  **$** python detect_clip.py  -c %clip path%
  
 _**Detect drowness through blinking**_:
- *  $python blinking.py
+ *  **$** python blinking.py
 
 _**GUILDLINES for GUI**_:
 
-$python Gui_form1_test.py
+**$** python Gui_form1_test.py
 
 # Facenet tab
 ![Facenet](/images/Facenet.png)
@@ -129,7 +129,7 @@ $python Gui_form1_test.py
  * Press **Capture** to get raw images of %user name% into **dataset_raw/%user name%**.
  * Press **Generate** to generate dataset for %user name% into **dataset/%user name%**.
  * All user names existing will be placed in the **Combo box**, select a user name out of them and press **Delete User** to delete it from source.
- * Press **Train Model** to start fine - tuning the model on created dataset. (This might cause the app to terminate due to the huge process load. In that case, you can leave the **Train Model** button untouched and run $python fine_tuning.py instead (you don't need to close the app), this will do the same thing - fine-tune and save model outputs into folder **output**)
+ * Press **Train Model** to start fine - tuning the model on created dataset. (**This might cause the app to terminate** due to the huge process load. In that case, you can leave the **Train Model** button untouched and run **$** python fine_tuning.py instead (you don't need to close the app), this will do the same thing - fine-tune and save model outputs into folder **output**)
  * Press **Start** to start the process.
  * Press **Stop** to terminate the process.
 
