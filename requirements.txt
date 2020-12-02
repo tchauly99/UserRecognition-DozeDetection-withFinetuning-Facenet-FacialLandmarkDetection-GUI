@@ -1,6 +1,6 @@
-numpy
+numpy==1.16.0
 tensorflow
-pyqt5
+pyqt5==5.15.1
 pyqt5-tools
 pandas
 opencv-contrib-python

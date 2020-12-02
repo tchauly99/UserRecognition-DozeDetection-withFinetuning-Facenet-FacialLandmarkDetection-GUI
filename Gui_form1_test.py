@@ -73,6 +73,18 @@ class MainWindow(QMainWindow):
         self.label = None
         self.ui.tabWidget.currentChanged.connect(self.main_widget_function)
         self.margin = 11
+
+        if not os.path.exists(configure.USER):
+            os.makedirs(configure.USER)
+        if not os.path.exists(configure.DATA):
+            os.makedirs(configure.DATA)
+        if not os.path.exists(configure.DATA_RAW):
+            os.makedirs(configure.DATA_RAW)
+        if not os.path.exists(configure.FROM_CLIP):
+            os.makedirs(configure.FROM_CLIP)
+        if not os.path.exists(configure.FROM_CLIP_RAW):
+            os.makedirs(configure.FROM_CLIP_RAW)
+
         self.dlib_init_function()
         self.manual_init_function()
 

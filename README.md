@@ -16,9 +16,9 @@ If any error during installing packages, consider Python version.
 
 Install **pip**
 
-Recommended terminal for Windows users: **Cmder**, **Git Bash**
+Terminal for **Windows** users: **Cmder**, **Git Bash** (highly recommended for Git learning -- https://phoenixnap.com/kb/how-to-install-git-windows)
 
-Download IDE Pycharm Community (recommended):
+Download IDE **Pycharm Community** (recommended):
  * https://www.jetbrains.com/pycharm/download/#section=windows
 
 Download code: 
@@ -28,7 +28,7 @@ Create and activate your virtual environment (recommended): geeksforgeeks.org/cr
  * $pip install virtualenv
  * [open terminal in your %Project path%]
  * $virtualenv AI_TGM_venv
- * $source AI_TGM_venv/bin/activate **(on Linux)** or $AI_TGM_venv\Scripts\activate **(on Windows)**
+ * $source AI_TGM_venv/bin/activate **(on Linux terminal)** or $AI_TGM_venv\Scripts\activate **(on Windows Cmd)** or $AI_TGM_venv\Scripts\activate **(on Windows GitBash)**
 		
 Install packages: 
  * $pip install -r requirements.txt
