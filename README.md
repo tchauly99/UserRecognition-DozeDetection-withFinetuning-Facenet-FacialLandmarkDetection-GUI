@@ -9,14 +9,16 @@ _**Description**_:
  * Detect user's drowness from eye-blinking counting, using **facial landmarks** extracted by **dlib**. (4)(https://pyimagesearch.com/2017/04/03/facial-landmarks-dlib-opencv-python/, https://www.pyimagesearch.com/2017/04/17/real-time-facial-landmark-detection-opencv-python-dlib/, https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/)
  * Develop a user interface (GUI) to perform the tasks **1, 3, 4** using **PyQt5** to compare between the two method **1** and **3**.
  * All the seperate source code files can be executed independently to perform seperate tasks, but they are finally combined into **Gui_form_test.py** to be executed with ease via GUI.
- 
+
+Windows OS is recommended for this project, there are some errors with executing GUI on Ubuntu that I've still not figured out how to fix.
+
 Recommended **Python** version: **3.6**
 
 If any error during installing packages, consider Python version.
 
 Install **pip**
 
-Terminal for **Windows** users: **Cmder**, **Git Bash** (highly recommended for Git learning -- https://phoenixnap.com/kb/how-to-install-git-windows)
+Terminal for **Windows** users: **Git Bash** (highly recommended for Git learning -- https://phoenixnap.com/kb/how-to-install-git-windows), **Cmder**
 
 Download IDE **Pycharm Community** (recommended):
  * https://www.jetbrains.com/pycharm/download/#section=windows
@@ -31,6 +33,7 @@ Create and activate your virtual environment (recommended): geeksforgeeks.org/cr
  * $source AI_TGM_venv/bin/activate **(on Linux terminal)** or $AI_TGM_venv\Scripts\activate **(on Windows Cmd)** or $AI_TGM_venv\Scripts\activate **(on Windows GitBash)**
 		
 Install packages: 
+ * [open terminal in your %Project path%]
  * $pip install -r requirements.txt
 
 Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here (to dev GUI): 
@@ -39,9 +42,10 @@ Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here (to de
  	* Windows:  $pip install PyQt5Designer
  	* Ubuntu:   $sudo apt install pyqt5-dev-tools pyqt5-dev  (and you can find **designer.py** in **/usr/lib/x86_64-linux-gnu/qt5/bin/designer**) 
 
-Refer how to download dlib here (for Windows):
- * https://www.geeksforgeeks.org/how-to-install-cmake-for-windows-in-python/
- * https://medium.com/analytics-vidhya/how-to-install-dlib-library-for-python-in-windows-10-57348ba1117f
+Refer how to download dlib (this might take a while, be patient!!!)
+ * here (for Windows):
+ 	* https://www.geeksforgeeks.org/how-to-install-cmake-for-windows-in-python/
+ 	* https://medium.com/analytics-vidhya/how-to-install-dlib-library-for-python-in-windows-10-57348ba1117f
  * or here (for Linux - much easier): https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
 	* $ sudo apt-get install build-essential cmake
 	* $ sudo apt-get install libgtk-3-dev
@@ -92,7 +96,7 @@ Get dataset from clips in folder **clips** - Generate dataset into dataset_fromc
  *  $python common_dataset.py -u %clip name% %clip name% %clip name%... -ic True
 
 Fine-tune **ResNet50** - **Imagenet** on dataset from folder **dataset** (can be modified to folder **dataset_fromcli**p in source code), output model, label and evaluation plot into folder **output**:
- *  $python fine_tuning.py 
+ *  $python fine_tuning.py (You may notice the process of training logging out on the terminal where you execute the file, watch how the loss and accuracy changes over each epoch).
 
 Perform face recognition for images from webcam - Press **"q"** on the keyboard to terminate:
  *  $python detect_cam.py
@@ -111,7 +115,7 @@ $python Gui_form1_test.py
 ![Facenet](/images/Facenet.png)
 
  * Press **Play** button to start displaying images captured from webcam, you can **Pause** anytime
- * Input %user name% into the **Text box**.
+ * Input %user name% into the **Text box**. (_**Check out user name in this Text box carefully everytime you press **Capture**_)
  * Press **Capture** to take a picture of %user name% which will be saved into **users/%user name%** for reference.
  * All user names existing will be placed in the **Combo box**, select a user name out of them and press **Delete User** to delete it from source.
  * Press **Start** to start the process. If the person in front of the camera is recognized as one of the users for 26 frames out of 40 consecutive frames, drowness detection function will be unlocked (**Unlocked** will replaced **Locked** in the label). 
@@ -121,11 +125,11 @@ $python Gui_form1_test.py
 ![Finetune](/images/Finetune.png)
 
  * Press **Play** button to start displaying images captured from webcam, you can **Pause** anytime.
- * Input %user name% into the **Text box**
+ * Input %user name% into the **Text box**. (_**Check out user name this Text box carefully everytime you press **Capture** or **Generate**_)
  * Press **Capture** to get raw images of %user name% into **dataset_raw/%user name%**.
  * Press **Generate** to generate dataset for %user name% into **dataset/%user name%**.
  * All user names existing will be placed in the **Combo box**, select a user name out of them and press **Delete User** to delete it from source.
- * Press **Train Model** to start fine - tuning the model on created dataset.
+ * Press **Train Model** to start fine - tuning the model on created dataset. (This might cause the app to terminate due to the huge process load. In that case, you can leave the **Train Model** button untouched and run $python fine_tuning.py instead (you don't need to close the app), this will do the same thing - fine-tune and save model outputs into folder **output**)
  * Press **Start** to start the process.
  * Press **Stop** to terminate the process.
 

@@ -84,6 +84,8 @@ class MainWindow(QMainWindow):
             os.makedirs(configure.FROM_CLIP)
         if not os.path.exists(configure.FROM_CLIP_RAW):
             os.makedirs(configure.FROM_CLIP_RAW)
+        if not os.path.exists(configure.OUTPUT_PATH):
+            os.makedirs(configure.OUTPUT_PATH)
 
         self.dlib_init_function()
         self.manual_init_function()
