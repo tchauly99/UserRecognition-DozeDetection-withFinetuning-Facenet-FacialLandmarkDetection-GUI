@@ -33,13 +33,20 @@ Create and activate your virtual environment (recommended): geeksforgeeks.org/cr
 Install packages: 
  * $pip install -r requirements.txt
 
+Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here (to dev GUI): 
+ * https://developpaper.com/pycharm-qt-designer-pyuic-installation-and-configuration-tutorial-details/
+ * Install PyQT5 Designer:
+ 	* Windows:  $pip install PyQt5Designer
+ 	* Ubuntu:   $sudo apt install pyqt5-dev-tools pyqt5-dev  (and you can find **designer.py** in **/usr/lib/x86_64-linux-gnu/qt5/bin/designer**) 
+
 Refer how to download dlib here (for Windows):
  * https://www.geeksforgeeks.org/how-to-install-cmake-for-windows-in-python/
  * https://medium.com/analytics-vidhya/how-to-install-dlib-library-for-python-in-windows-10-57348ba1117f
- * or here (for Linux): https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
- 
-Refer how to config Qt Python Designer and Qt Python UIC for Pycharm here: 
- * https://developpaper.com/pycharm-qt-designer-pyuic-installation-and-configuration-tutorial-details/
+ * or here (for Linux - much easier): https://www.pyimagesearch.com/2017/03/27/how-to-install-dlib/
+	* $ sudo apt-get install build-essential cmake
+	* $ sudo apt-get install libgtk-3-dev
+	* $ sudo apt-get install libboost-all-dev
+	* $ pip install dlib
 
 Models to download into folder **models**:
 
