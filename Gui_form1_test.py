@@ -215,21 +215,27 @@ class MainWindow(QMainWindow):
             cv2.drawContours(self.image, [rightEyeHull], -1, (0, 255, 0), 1)
             if ear < self.EYE_AR_THRESH:
                 self.COUNTER += 1
-                if self.COUNTER >= 200:
-                    cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (100, 50),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                if self.COUNTER >= 100:
+                    cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (200, 50),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
             else:
                 if self.COUNTER >= self.EYE_AR_CONSEC_FRAMES:
                     self.TOTAL += 1
                 self.COUNTER = 0
             cv2.putText(self.image, "Blinks: {}".format(self.TOTAL), (10, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (235, 155, 0), 1)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (238, 59, 59), 2)
             cv2.putText(self.image, "EAR: {:.2f}".format(ear), (250, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (125, 233, 90), 1)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (238, 59, 59), 2)
             cv2.putText(self.image, "USER: {}".format(self.label), (10, 70),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (120, 190, 122), 1)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (238, 59, 59), 2)
 
     def main_widget_function(self):
+        self.COUNTER = 0
+        self.TOTAL = 0
+        self.unlock_counter = 0
+        self.labels = []
+        self.label = None
+
         if self.ui.tabWidget.currentIndex() == 0:
             self.mode = 0
             self.ui.Lock_Lb.setText("Locked")
@@ -411,11 +417,11 @@ class MainWindow(QMainWindow):
             y2 = bb[3]
             x1 = bb[0]
             x2 = bb[2]
-            cv2.rectangle(self.image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            cv2.rectangle(self.image, (x1, y1), (x2, y2), (219, 112, 147), 2)
             y = y1 - 10 if y1 - 10 > 10 else y1 + 10
             text = "{}: {}%".format(label, prob * 100)
             cv2.putText(self.image, text, (x1, y),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 1)
             self.unlock_counter += 1
 
     def facenet_compare_stop_function_2(self):
@@ -453,7 +459,7 @@ class MainWindow(QMainWindow):
             elif self.mode_2 == 2:
                 self.secure_function_2()
 
-                if self.unlock_counter >= 40:
+                if self.unlock_counter >= 30:
                     self.unlock_counter = 0
                     print(self.labels)
                     counter = Counter(self.labels)
@@ -461,12 +467,11 @@ class MainWindow(QMainWindow):
                     print(max_value)
                     max_key = [k for k, v in counter.items() if v == max_value]
                     self.labels = []
-                    print(max_key[0])
-                    if (max_key[0] != 'Unknown') and (max_value >= 26):
+                    if (max_key[0] != 'Unknown') and (max_value >= 17):
                         self.label = max_key
                         self.ui.Lock_Lb_2.setText("Unlocked")
                         self.COUNTER = 0
-                        self.TOTAl = 0
+                        self.TOTAL = 0
                         self.mode_2 = 3
             elif self.mode_2 == 3:
                 self.blinking_function()
@@ -509,7 +514,6 @@ class MainWindow(QMainWindow):
         self.class_names = os.listdir(configure.USER)
         self.embeddings = []
         for class_name in self.class_names:
-            print(class_name)
             imagePaths = os.path.sep.join([configure.USER, class_name])
             imagePaths = list(paths.list_images(imagePaths))
             image = cv2.imread(imagePaths[0])
@@ -520,6 +524,7 @@ class MainWindow(QMainWindow):
         self.unlock_counter = 0
         self.labels = []
         self.mode = 1
+
 
     def secure_function(self):
         frame = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
@@ -543,17 +548,16 @@ class MainWindow(QMainWindow):
             y2 = bb[3]
             x1 = bb[0]
             x2 = bb[2]
-            cv2.rectangle(self.image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            cv2.rectangle(self.image, (x1, y1), (x2, y2), (219, 112, 147), 2)
             y = y1 - 10 if y1 - 10 > 10 else y1 + 10
             text = "{}: {}%".format(label, prob)
             cv2.putText(self.image, text, (x1, y),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 1)
 
     def facenet_compare_setup_function(self):
         self.class_names = os.listdir(configure.USER)
         self.embeddings = []
         for class_name in self.class_names:
-            print(class_name)
             imagePaths = os.path.sep.join([configure.USER, class_name])
             imagePaths = list(paths.list_images(imagePaths))
             image = cv2.imread(imagePaths[0])
@@ -584,18 +588,18 @@ class MainWindow(QMainWindow):
             if self.mode == 1:
                 self.secure_function()
                 self.unlock_counter += 1
-                if self.unlock_counter >= 40:
+                if self.unlock_counter >= 30:
                     self.unlock_counter = 0
-                    print(self.labels)
+                    # print(self.labels)
                     counter = Counter(self.labels)
                     max_value = max(counter.values())
                     max_key = [k for k, v in counter.items() if v == max_value]
                     self.labels = []
-                    if (max_key[0] != 'Unknown') and (max_value >= 30):
+                    if (max_key[0] != 'Unknown') and (max_value >= 17):
                         self.label = max_key
                         self.ui.Lock_Lb.setText("Unlocked")
                         self.COUNTER = 0
-                        self.TOTAl = 0
+                        self.TOTAL = 0
                         self.mode = 2
 
             elif self.mode == 2:
