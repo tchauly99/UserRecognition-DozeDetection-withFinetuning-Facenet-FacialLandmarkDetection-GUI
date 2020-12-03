@@ -1,7 +1,7 @@
 # AI_TGM
 
 _**Description**_: 
- * Face detection uses flexibly between **Haar-Cascade** and **Multi-task Cascaded CNN** (MTCNN) method (library available), only the first one is used in GUI.
+ * Face detection uses flexibly between **Haar-Cascade** (https://viblo.asia/p/haar-cascade-la-gi-luan-ve-mot-ky-thuat-chuyen-dung-de-nhan-biet-cac-khuon-mat-trong-anh-E375zamdlGW, https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html) and **Multi-task Cascaded CNN** (MTCNN) method (library available), only the first one is used in GUI.
  * This repo perform face recognition using 3 approachs:
  	* Use **Facenet** model (facenet_keras.h5) to extract embedding vectors from images, compare those vectors between input image and reference images using **cosine** method to detect face matching. (1) (https://medium.com/analytics-vidhya/introduction-to-facenet-a-unified-embedding-for-face-recognition-and-clustering-dbdac8e6f02, https://medium.com/@athul929/building-a-facial-recognition-system-with-facenet-b9c249c2388a)
  	* Train a **Support Vector Machine** (SVM) classifier (with library from sklearn) on embedding vectors extracted from **Facenet**. (2)
@@ -20,7 +20,7 @@ Install **pip**
 
 Terminal for **Windows** users: **Git Bash** (highly recommended for Git learning -- https://phoenixnap.com/kb/how-to-install-git-windows), **Cmder**
 
-Download IDE **Pycharm Community** (recommended):
+Download IDE **Pycharm Community** (recommended, terminal available):
  * https://www.jetbrains.com/pycharm/download/#section=windows
 
 Download code: 
