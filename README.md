@@ -118,7 +118,7 @@ _**GUILDLINES for GUI**_:
  * Input %user name% into the **Text box**. (_**Check out user name in this Text box carefully everytime you press **Capture**_)
  * Press **Capture** to take a picture of %user name% which will be saved into **users/%user name%** for reference.
  * All user names existing will be placed in the **Combo box**, select a user name out of them and press **Delete User** to delete it from source.
- * Press **Start** to start the process. If the person in front of the camera is recognized as one of the users for 26 frames out of 40 consecutive frames, drowness detection function will be unlocked (**Unlocked** will replaced **Locked** in the label). 
+ * Press **Start** to start the process. If the person in front of the camera is recognized as one of the users for 17 frames out of 30 consecutive frames, drowness detection function will be unlocked (**Unlocked** will replaced **Locked** in the label). 
  * Press **Stop** to terminate the process.
  
 # Finetune tab
