@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
     def dlib_init_function(self):
         self.mode = 0
         self.model_facenet = load_model(configure.FACENET_PATH)
-        self.facenet_compare_setup_function()
+        # self.facenet_compare_setup_function()
         self.class_names = os.listdir(configure.USER)
 
         self.ui.PlayButton.clicked.connect(self.controlTimer)
@@ -199,6 +199,7 @@ class MainWindow(QMainWindow):
             return cut, 0, 0
 
     def blinking_function(self):
+        self.ALERT_COUNTER = self.fps*5
         gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         rects = self.detector(gray, 0)
         for rect in rects:
@@ -215,8 +216,8 @@ class MainWindow(QMainWindow):
             cv2.drawContours(self.image, [rightEyeHull], -1, (0, 255, 0), 1)
             if ear < self.EYE_AR_THRESH:
                 self.COUNTER += 1
-                if self.COUNTER >= 100:
-                    cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (200, 50),
+                if self.COUNTER >= self.ALERT_COUNTER:
+                    cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (70, 150),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
             else:
                 if self.COUNTER >= self.EYE_AR_CONSEC_FRAMES:
@@ -640,9 +641,13 @@ class MainWindow(QMainWindow):
     def checkFPS(self):
         self.time1 = datetime.now().microsecond
         deltime = self.time1 - self.time0
-        # if deltime != 0:
-        #     print(int(round(1000000 / deltime)))
-        # self.time0 = self.time1
+        if deltime != 0:
+            self.fps = int(round(1000000 / deltime))
+        else:
+            self.fps = 0
+        if deltime != 0:
+            print(int(round(1000000 / deltime)))
+        self.time0 = self.time1
 
     def controlTimer(self):
         self.time0 = datetime.now().microsecond

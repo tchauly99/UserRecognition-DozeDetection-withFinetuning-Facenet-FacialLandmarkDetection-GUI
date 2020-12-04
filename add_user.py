@@ -20,8 +20,7 @@ if not os.path.exists(path):
     os.makedirs(path)
 imagePath = os.path.sep.join([path, filename])
 
-cap = cv2.VideoCapture("clip/Nghia.mp4")
-
+cap = cv2.VideoCapture(0)
 while True:
     ret, frame = cap.read()
     if frame is None:
@@ -60,6 +59,7 @@ while True:
             bb[2] = np.minimum(det[2] + margin / 2, frame.shape[1])
             bb[3] = np.minimum(det[3] + margin / 2, frame.shape[0])
             aligned = frame[bb[1]:bb[3], bb[0]:bb[2], :]
+            cv2.imwrite(imagePath, aligned)
             break
     sleep(0.1)
-cv2.imwrite(imagePath, aligned)
+
