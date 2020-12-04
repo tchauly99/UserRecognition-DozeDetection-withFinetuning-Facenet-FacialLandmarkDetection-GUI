@@ -30,7 +30,7 @@ Create and activate your virtual environment (recommended): geeksforgeeks.org/cr
  * **$** pip install virtualenv
  * [open terminal in your %Project path%]
  * **$** virtualenv AI_TGM_venv
- * **$** source AI_TGM_venv/bin/activate **(on Linux terminal)** or **$** AI_TGM_venv\Scripts\activate **(on Windows Cmd)** or **$** $AI_TGM_venv\Scripts\activate **(on Windows GitBash)**
+ * **$** source AI_TGM_venv/bin/activate **(on Linux terminal)** or **$** AI_TGM_venv\Scripts\activate **(on Windows Cmd)** or **$** $source AI_TGM_venv/Scripts/activate **(on Windows GitBash)**
 		
 Install packages: 
  * [open terminal in your %Project path%]
@@ -74,6 +74,19 @@ We need an image of every reference user - Press **"q"** on the keyboard to take
 
 Perform face similarity recognition for images from webcam - Press **"q"** on the keyboard to terminate:
  * **$** python facenet_compare.py 
+ 
+_**Create dataset**_:
+
+We need a dataset of face-cut and aligned images of every user inside folder **dataset** or **dataset_fromclip**, during the process, folder **dataset_raw** or **datasetraw_fromclip** may contain raw images.
+
+Get images of each user from webcam into dataset_raw/%user name%:
+ *  **$** python get_video.py -u %user name%
+ 
+Generate dataset into dataset/%user name% for all images in folder **dataset_raw**:
+ *  **$** python common_dataset.py 
+
+Get dataset from clips in folder **clips** - Generate dataset into dataset_fromclip/%clip name% for every %clip name%:
+ *  **$** python common_dataset.py -u %clip name% %clip name% %clip name%... -ic True
 
 _**Train SVM on facenet embeddings for face recognition**_:
 
@@ -84,16 +97,6 @@ Perform face recognition for images from webcam - Press **"q"** on the keyboard 
  *  **$** python detect_clip2.py
 
 _**Fine tune a model for face recognition**_:
-
-We need a dataset of face-cut and aligned images of every user inside folder **dataset** or **dataset_fromclip**, during the process, folder **dataset_raw** or **datasetraw_fromclip** may contain raw images
-Get images of each user from webcam into dataset_raw/%user name%:
- *  **$** python get_video.py -u %user name%
- 
-Generate dataset into dataset/%user name% for all images in folder **dataset_raw**:
- *  **$** python common_dataset.py 
-
-Get dataset from clips in folder **clips** - Generate dataset into dataset_fromclip/%clip name% for every %clip name%:
- *  **$** python common_dataset.py -u %clip name% %clip name% %clip name%... -ic True
 
 Fine-tune **ResNet50** - **Imagenet** on dataset from folder **dataset** (can be modified to folder **dataset_fromcli**p in source code), output model, label and evaluation plot into folder **output**:
  *  **$** python fine_tuning.py (You may notice the process of training logging out on the terminal where you execute the file, watch how the loss and accuracy changes over each epoch).
