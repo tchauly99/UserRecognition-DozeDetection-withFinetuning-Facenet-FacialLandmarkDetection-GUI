@@ -199,7 +199,14 @@ class MainWindow(QMainWindow):
             return cut, 0, 0
 
     def blinking_function(self):
-        self.ALERT_COUNTER = self.fps*5
+        # self.ALERT_COUNTER = self.fps*5
+        if self.ui.tabWidget.currentIndex() == 0:
+            self.ALERT_COUNTER = 100
+            self.EYE_AR_CONSEC_FRAMES = 3
+        else:
+            self.ALERT_COUNTER = 50
+            self.EYE_AR_CONSEC_FRAMES = 1
+
         gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         rects = self.detector(gray, 0)
         for rect in rects:
@@ -409,7 +416,7 @@ class MainWindow(QMainWindow):
             pred = self.model.predict(image)
             pred_index = np.argmax(pred, axis=1)
             prob = pred[:, pred_index]
-            if prob >= 0.8:
+            if prob >= 0.7:
                 label = self.lb.classes_[pred_index][0]
             else:
                 label = 'Unknown'
@@ -645,8 +652,8 @@ class MainWindow(QMainWindow):
             self.fps = int(round(1000000 / deltime))
         else:
             self.fps = 0
-        if deltime != 0:
-            print(int(round(1000000 / deltime)))
+        # if deltime != 0:
+        #     print(int(round(1000000 / deltime)))
         self.time0 = self.time1
 
     def controlTimer(self):
