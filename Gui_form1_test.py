@@ -259,19 +259,27 @@ class MainWindow(QMainWindow):
         [self.ui.ListUser_Cb_3.addItem(member) for member in self.class_names_2]
 
     def delete_user_function_2(self):
-        path = os.path.sep.join([configure.DATA, self.ui.ListUser_Cb_3.currentText()])
-        shutil.rmtree(path)
-        self.List_User_function_2()
+        if self.ui.Password_Tb_2.text() != "1999":
+            self.ui.Password_Tb_2.setText("PASSWORD INCORRECT!!!")
+        else:
+            path = os.path.sep.join([configure.DATA, self.ui.ListUser_Cb_3.currentText()])
+            shutil.rmtree(path)
+            self.List_User_function_2()
+            self.ui.Password_Tb_2.setText("Input Password here")
 
     def add_user_function_2(self):
-        self.timer.timeout.connect(self.viewcam4)
-        self.num_frame = 0
-        self.num_image = 0
-        self.output_path = os.path.sep.join([configure.DATA_RAW, self.ui.username_Tb_3.text()])
-        if not os.path.exists(self.output_path):
-            os.makedirs(self.output_path)
-        self.mode_2 = 1
-        self.List_User_function_2()
+        if self.ui.Password_Tb_2.text() != "1999":
+            self.ui.Password_Tb_2.setText("PASSWORD INCORRECT!!!")
+        else:
+            self.timer.timeout.connect(self.viewcam4)
+            self.num_frame = 0
+            self.num_image = 0
+            self.output_path = os.path.sep.join([configure.DATA_RAW, self.ui.username_Tb_3.text()])
+            if not os.path.exists(self.output_path):
+                os.makedirs(self.output_path)
+            self.mode_2 = 1
+            self.List_User_function_2()
+            self.ui.Password_Tb_2.setText("Input Password here")
 
     def gen_dataset_function(self):
         imagePaths_raw = list(paths.list_images(configure.DATA_RAW))
@@ -297,6 +305,7 @@ class MainWindow(QMainWindow):
                 if aligned is not None and imagePath is not None:
                     cv2.imwrite(imagePath, aligned)
                 i += 1
+        self.List_User_function_2()
 
     def train_function(self):
         self.timer.stop()
@@ -471,16 +480,16 @@ class MainWindow(QMainWindow):
                     self.unlock_counter = 0
                     print(self.labels)
                     counter = Counter(self.labels)
-                    max_value = max(counter.values())
-                    print(max_value)
-                    max_key = [k for k, v in counter.items() if v == max_value]
-                    self.labels = []
-                    if (max_key[0] != 'Unknown') and (max_value >= 17):
-                        self.label = max_key
-                        self.ui.Lock_Lb_2.setText("Unlocked")
-                        self.COUNTER = 0
-                        self.TOTAL = 0
-                        self.mode_2 = 3
+                    if counter:
+                        max_value = max(counter.values())
+                        max_key = [k for k, v in counter.items() if v == max_value]
+                        self.labels = []
+                        if (max_key[0] != 'Unknown') and (max_value >= 17):
+                            self.label = max_key
+                            self.ui.Lock_Lb_2.setText("Unlocked")
+                            self.COUNTER = 0
+                            self.TOTAL = 0
+                            self.mode_2 = 3
             elif self.mode_2 == 3:
                 self.blinking_function()
 
@@ -493,22 +502,30 @@ class MainWindow(QMainWindow):
         [self.ui.ListUser_Cb.addItem(member) for member in self.class_names]
 
     def add_user_function(self):
-        self.copy = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
-        user_name = self.ui.username_Tb.text()
-        filename = "{}.png".format(user_name)
-        path = os.path.sep.join([configure.USER, user_name])
-        if not os.path.exists(path):
-            os.makedirs(path)
-        self.List_User_function()
-        imagePath = os.path.sep.join([path, filename])
-        aligned, face_existence, _ = self.detect_align_function(self.copy)
-        if face_existence == 1:
-            cv2.imwrite(imagePath, aligned)
+        if self.ui.Password_Tb.text() != "1999":
+            self.ui.Password_Tb.setText("PASSWORD INCORRECT!!!")
+        else:
+            self.copy = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+            user_name = self.ui.username_Tb.text()
+            filename = "{}.png".format(user_name)
+            path = os.path.sep.join([configure.USER, user_name])
+            if not os.path.exists(path):
+                os.makedirs(path)
+            self.List_User_function()
+            imagePath = os.path.sep.join([path, filename])
+            aligned, face_existence, _ = self.detect_align_function(self.copy)
+            if face_existence == 1:
+                cv2.imwrite(imagePath, aligned)
+            self.ui.Password_Tb.setText("Input Password here")
 
     def delete_user_function(self):
-        path = os.path.sep.join([configure.USER, self.ui.ListUser_Cb.currentText()])
-        shutil.rmtree(path)
-        self.List_User_function()
+        if self.ui.Password_Tb.text() != "1999":
+            self.ui.Password_Tb.setText("PASSWORD INCORRECT!!!")
+        else:
+            path = os.path.sep.join([configure.USER, self.ui.ListUser_Cb.currentText()])
+            shutil.rmtree(path)
+            self.List_User_function()
+            self.ui.Password_Tb.setText("Input Password here")
 
     def get_embedding(self, model_, face):
         face = face.astype('float32')
@@ -600,15 +617,16 @@ class MainWindow(QMainWindow):
                     self.unlock_counter = 0
                     # print(self.labels)
                     counter = Counter(self.labels)
-                    max_value = max(counter.values())
-                    max_key = [k for k, v in counter.items() if v == max_value]
-                    self.labels = []
-                    if (max_key[0] != 'Unknown') and (max_value >= 17):
-                        self.label = max_key
-                        self.ui.Lock_Lb.setText("Unlocked")
-                        self.COUNTER = 0
-                        self.TOTAL = 0
-                        self.mode = 2
+                    if counter:
+                        max_value = max(counter.values())
+                        max_key = [k for k, v in counter.items() if v == max_value]
+                        self.labels = []
+                        if (max_key[0] != 'Unknown') and (max_value >= 17):
+                            self.label = max_key
+                            self.ui.Lock_Lb.setText("Unlocked")
+                            self.COUNTER = 0
+                            self.TOTAL = 0
+                            self.mode = 2
 
             elif self.mode == 2:
                 self.blinking_function()

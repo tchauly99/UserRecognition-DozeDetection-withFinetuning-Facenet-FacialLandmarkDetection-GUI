@@ -17,14 +17,14 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>100</x>
       <y>110</y>
-      <width>671</width>
-      <height>531</height>
+      <width>691</width>
+      <height>561</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Dlib">
      <attribute name="title">
@@ -152,7 +152,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Chau</string>
+       <string>UserName</string>
       </property>
      </widget>
      <widget class="QSlider" name="horizontalSlider">
@@ -207,6 +207,41 @@
        <string>Delete User</string>
       </property>
      </widget>
+     <widget class="QLineEdit" name="Password_Tb">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>430</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Input Password here</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Password_Lb">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>430</y>
+        <width>61</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Panel</enum>
+      </property>
+      <property name="text">
+       <string> Password</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::AutoText</enum>
+      </property>
+      <property name="indent">
+       <number>0</number>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="Manual">
      <attribute name="title">
@@ -251,8 +286,8 @@
      <widget class="QPushButton" name="Stop_Btn_2">
       <property name="geometry">
        <rect>
-        <x>430</x>
-        <y>450</y>
+        <x>230</x>
+        <y>480</y>
         <width>71</width>
         <height>31</height>
        </rect>
@@ -264,8 +299,8 @@
      <widget class="QPushButton" name="Start_Btn_2">
       <property name="geometry">
        <rect>
-        <x>340</x>
-        <y>450</y>
+        <x>120</x>
+        <y>480</y>
         <width>81</width>
         <height>31</height>
        </rect>
@@ -351,7 +386,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Chau</string>
+       <string>UserName</string>
       </property>
      </widget>
      <widget class="QPushButton" name="PlayButton_2">
@@ -370,7 +405,7 @@
      <widget class="QLabel" name="Lock_Lb_2">
       <property name="geometry">
        <rect>
-        <x>510</x>
+        <x>340</x>
         <y>450</y>
         <width>41</width>
         <height>31</height>
@@ -407,6 +442,41 @@
       </property>
       <property name="text">
        <string>Train Model</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="Password_Tb_2">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>490</y>
+        <width>161</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Input Password here</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Password_Lb_2">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>490</y>
+        <width>61</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Panel</enum>
+      </property>
+      <property name="text">
+       <string> Password</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::AutoText</enum>
+      </property>
+      <property name="indent">
+       <number>0</number>
       </property>
      </widget>
     </widget>
