@@ -39,7 +39,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
 import pickle
-
+import winsound
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -92,6 +92,10 @@ class MainWindow(QMainWindow):
 
         print("[INFO] loading model and label binarizer...")
 
+        self.duration = 500 #miliseconds
+        self.freq = 440 #Hz
+
+
     def dlib_init_function(self):
         self.mode = 0
         self.model_facenet = load_model(configure.FACENET_PATH)
@@ -100,12 +104,14 @@ class MainWindow(QMainWindow):
 
         self.ui.PlayButton.clicked.connect(self.controlTimer)
         self.ui.PlayButton.setIcon(QApplication.style().standardIcon(QStyle.SP_MediaPlay))
+        self.ui.Status_pw_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
+        self.ui.Status_capture_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
         self.ui.PlayButton.setEnabled(True)
         self.ui.DeleteUser_Btn.clicked.connect(self.delete_user_function)
         self.ui.Capture_Btn.clicked.connect(self.add_user_function)
         self.ui.Start_Btn.clicked.connect(self.facenet_compare_function)
         self.ui.Stop_Btn.clicked.connect(self.facenet_compare_stop_function)
-
+        self.ui.Lock_Lb.setStyleSheet("QLabel { background-color: red }")
         self.List_User_function()
 
     def manual_init_function(self):
@@ -120,13 +126,17 @@ class MainWindow(QMainWindow):
         self.ui.PlayButton_2.setIcon(QApplication.style().standardIcon(QStyle.SP_MediaPlay))
         self.ui.PlayButton_2.setEnabled(True)
 
-        self.ui.DeleteUser_Btn_3.clicked.connect(self.delete_user_function)
+        self.ui.DeleteUser_Btn_3.clicked.connect(self.delete_user_function_2)
         self.ui.Capture_Btn_3.clicked.connect(self.add_user_function_2)
         self.ui.Train_Btn.clicked.connect(self.train_function)
         self.ui.Start_Btn_2.clicked.connect(self.compare_function_2)
         self.ui.Stop_Btn_2.clicked.connect(self.facenet_compare_stop_function_2)
-
+        self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
+        self.ui.Status_capture_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
+        self.ui.Lock_Lb_2.setStyleSheet("QLabel { background-color: red }")
         self.List_User_function_2()
+
+
 
     def detect_align_function(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -226,6 +236,7 @@ class MainWindow(QMainWindow):
                 if self.COUNTER >= self.ALERT_COUNTER:
                     cv2.putText(self.image, "ALERT: DRIVER IS SLEEPING", (70, 150),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+                    winsound.Beep(self.duration, self.freq)
             else:
                 if self.COUNTER >= self.EYE_AR_CONSEC_FRAMES:
                     self.TOTAL += 1
@@ -246,11 +257,13 @@ class MainWindow(QMainWindow):
 
         if self.ui.tabWidget.currentIndex() == 0:
             self.mode = 0
-            self.ui.Lock_Lb.setText("Locked")
+            self.ui.Lock_Lb.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Locked</span></p></body></html>")
+            self.ui.Lock_Lb.setStyleSheet("QLabel { background-color: red }")
             self.timer.timeout.connect(self.viewcam3)
         else:
             self.mode_2 = 0
-            self.ui.Lock_Lb_2.setText("Locked")
+            self.ui.Lock_Lb_2.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Locked</span></p></body></html>")
+            self.ui.Lock_Lb_2.setStyleSheet("QLabel { background-color: red }")
             self.timer.timeout.connect(self.viewcam4)
 
     def List_User_function_2(self):
@@ -260,26 +273,35 @@ class MainWindow(QMainWindow):
 
     def delete_user_function_2(self):
         if self.ui.Password_Tb_2.text() != "1999":
-            self.ui.Password_Tb_2.setText("PASSWORD INCORRECT!!!")
+            self.ui.Password_Tb_2.clear()
+            self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogCancelButton).pixmap(QSize(50, 50)))
         else:
             path = os.path.sep.join([configure.DATA, self.ui.ListUser_Cb_3.currentText()])
             shutil.rmtree(path)
             self.List_User_function_2()
-            self.ui.Password_Tb_2.setText("Input Password here")
+            self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplylButton).pixmap(QSize(50, 50)))
+            #self.ui.Password_Tb_2.clear()
 
     def add_user_function_2(self):
         if self.ui.Password_Tb_2.text() != "1999":
-            self.ui.Password_Tb_2.setText("PASSWORD INCORRECT!!!")
+            self.ui.Password_Tb_2.clear()
+            self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogCancelButton).pixmap(QSize(50, 50)))
         else:
-            self.timer.timeout.connect(self.viewcam4)
-            self.num_frame = 0
-            self.num_image = 0
-            self.output_path = os.path.sep.join([configure.DATA_RAW, self.ui.username_Tb_3.text()])
-            if not os.path.exists(self.output_path):
-                os.makedirs(self.output_path)
-            self.mode_2 = 1
-            self.List_User_function_2()
-            self.ui.Password_Tb_2.setText("Input Password here")
+            if len(self.ui.username_Tb_3.text()):
+                self.timer.timeout.connect(self.viewcam4)
+                self.num_frame = 0
+                self.num_image = 0
+                self.output_path = os.path.sep.join([configure.DATA_RAW, self.ui.username_Tb_3.text()])
+                if not os.path.exists(self.output_path):
+                    os.makedirs(self.output_path)
+                self.mode_2 = 1
+                self.List_User_function_2()
+                self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplylButton).pixmap(QSize(50, 50)))
+                # self.ui.Password_Tb_2.clear()
+            else:
+                self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
+                self.ui.Status_capture_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogCancelButton).pixmap(QSize(50, 50)))
+
 
     def gen_dataset_function(self):
         imagePaths_raw = list(paths.list_images(configure.DATA_RAW))
@@ -443,8 +465,9 @@ class MainWindow(QMainWindow):
 
     def facenet_compare_stop_function_2(self):
         self.mode_2 = 0
-        self.ui.Lock_Lb_2.setText("Locked")
-        self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
+        self.ui.Lock_Lb_2.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Locked</span></p></body></html>")
+        self.ui.Lock_Lb_2.setStyleSheet("QLabel { background-color: red }")
+        # self.ui.PlayButton_2.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
         # self.timer.stop()
 
     def viewcam4(self):
@@ -452,7 +475,8 @@ class MainWindow(QMainWindow):
 
         if self.image is None:
             self.mode = 0
-            self.ui.Lock_Lb_2.setText("Locked")
+            self.ui.Lock_Lb_2.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Locked</span></p></body></html>")
+            self.ui.Lock_Lb_2.setStyleSheet("QLabel { background-color: red }")
             self.ui.PlayButton_2.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
             self.timer.stop()
         else:
@@ -486,7 +510,8 @@ class MainWindow(QMainWindow):
                         self.labels = []
                         if (max_key[0] != 'Unknown') and (max_value >= 17):
                             self.label = max_key
-                            self.ui.Lock_Lb_2.setText("Unlocked")
+                            self.ui.Lock_Lb_2.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Unlocked</span></p></body></html>")
+                            self.ui.Lock_Lb_2.setStyleSheet("QLabel { background-color: green }")
                             self.COUNTER = 0
                             self.TOTAL = 0
                             self.mode_2 = 3
@@ -503,29 +528,39 @@ class MainWindow(QMainWindow):
 
     def add_user_function(self):
         if self.ui.Password_Tb.text() != "1999":
-            self.ui.Password_Tb.setText("PASSWORD INCORRECT!!!")
+            self.ui.Password_Tb.clear()
+            self.ui.Status_pw_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogCancelButton).pixmap(QSize(50, 50)))
         else:
             self.copy = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
             user_name = self.ui.username_Tb.text()
-            filename = "{}.png".format(user_name)
-            path = os.path.sep.join([configure.USER, user_name])
-            if not os.path.exists(path):
-                os.makedirs(path)
-            self.List_User_function()
-            imagePath = os.path.sep.join([path, filename])
-            aligned, face_existence, _ = self.detect_align_function(self.copy)
-            if face_existence == 1:
-                cv2.imwrite(imagePath, aligned)
-            self.ui.Password_Tb.setText("Input Password here")
+            if len(user_name):
+                filename = "{}.png".format(user_name)
+                path = os.path.sep.join([configure.USER, user_name])
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                self.List_User_function()
+                imagePath = os.path.sep.join([path, filename])
+                aligned, face_existence, _ = self.detect_align_function(self.copy)
+                if face_existence == 1:
+                    cv2.imwrite(imagePath, aligned)
+                #self.ui.Password_Tb.clear()
+                self.ui.Status_pw_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
+                self.ui.username_Tb.clear()
+                self.ui.Status_capture_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
+            else:
+                self.ui.Status_capture_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogCancelButton).pixmap(QSize(50, 50)))
+                self.ui.Status_pw_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
 
     def delete_user_function(self):
         if self.ui.Password_Tb.text() != "1999":
-            self.ui.Password_Tb.setText("PASSWORD INCORRECT!!!")
+            self.ui.Password_Tb.clear()
+            self.ui.Status_pw_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogCancelButton).pixmap(QSize(50, 50)))
         else:
             path = os.path.sep.join([configure.USER, self.ui.ListUser_Cb.currentText()])
             shutil.rmtree(path)
             self.List_User_function()
-            self.ui.Password_Tb.setText("Input Password here")
+            #self.ui.Password_Tb.clear()
+            self.ui.Status_pw_Lb.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
 
     def get_embedding(self, model_, face):
         face = face.astype('float32')
@@ -593,8 +628,9 @@ class MainWindow(QMainWindow):
 
     def facenet_compare_stop_function(self):
         self.mode = 0
-        self.ui.Lock_Lb.setText("Locked")
-        self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
+        self.ui.Lock_Lb.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Locked</span></p></body></html>")
+        self.ui.Lock_Lb.setStyleSheet("QLabel { background-color: red }")
+        # self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
         # self.timer.stop()
 
     def viewcam3(self):
@@ -602,7 +638,8 @@ class MainWindow(QMainWindow):
 
         if self.image is None:
             self.mode = 0
-            self.ui.Lock_Lb.setText("Locked")
+            self.ui.Lock_Lb.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Locked</span></p></body></html>")
+            self.ui.Lock_Lb.setStyleSheet("QLabel { background-color: red }")
             self.TOTAL = 0
             self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
             self.timer.stop()
@@ -623,7 +660,8 @@ class MainWindow(QMainWindow):
                         self.labels = []
                         if (max_key[0] != 'Unknown') and (max_value >= 17):
                             self.label = max_key
-                            self.ui.Lock_Lb.setText("Unlocked")
+                            self.ui.Lock_Lb.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Unlocked</span></p></body></html>")
+                            self.ui.Lock_Lb.setStyleSheet("QLabel { background-color: green }")
                             self.COUNTER = 0
                             self.TOTAL = 0
                             self.mode = 2
@@ -683,9 +721,11 @@ class MainWindow(QMainWindow):
             # self.cap = cv2.VideoCapture(self.filename)
             self.timer.start(40)
             self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPause))
+            self.ui.PlayButton_2.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPause))
         else:
             self.timer.stop()
             self.ui.PlayButton.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
+            self.ui.PlayButton_2.setIcon(QMainWindow().style().standardIcon(QStyle.SP_MediaPlay))
         if (self.ui.tabWidget.currentIndex() == 0):
             self.timer.timeout.connect(self.viewcam3)
         else:
