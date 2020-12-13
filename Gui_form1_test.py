@@ -215,7 +215,7 @@ class MainWindow(QMainWindow):
             self.EYE_AR_CONSEC_FRAMES = 3
         else:
             self.ALERT_COUNTER = 50
-            self.EYE_AR_CONSEC_FRAMES = 1
+            # self.EYE_AR_CONSEC_FRAMES = 1
 
         gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         rects = self.detector(gray, 0)
@@ -296,7 +296,7 @@ class MainWindow(QMainWindow):
                     os.makedirs(self.output_path)
                 self.mode_2 = 1
                 self.List_User_function_2()
-                self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplylButton).pixmap(QSize(50, 50)))
+                self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
                 # self.ui.Password_Tb_2.clear()
             else:
                 self.ui.Status_pw_Lb_2.setPixmap(QApplication.style().standardIcon(QStyle.SP_DialogApplyButton).pixmap(QSize(50, 50)))
@@ -502,7 +502,6 @@ class MainWindow(QMainWindow):
 
                 if self.unlock_counter >= 30:
                     self.unlock_counter = 0
-                    print(self.labels)
                     counter = Counter(self.labels)
                     if counter:
                         max_value = max(counter.values())
@@ -516,6 +515,7 @@ class MainWindow(QMainWindow):
                             self.TOTAL = 0
                             self.mode_2 = 3
             elif self.mode_2 == 3:
+                self.ALERT_COUNTER = self.fps * 5
                 self.blinking_function()
 
             self.showImage()

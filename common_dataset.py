@@ -90,8 +90,8 @@ if args["if_clip"]:
                 cv2.imwrite(imagePath, image)
 else:
     imagePaths_raw = list(paths.list_images(configure.DATA_RAW))
-    class_names = os.listdir(configure.DATA_RAW)
-    # class_names = list(["Chau"])
+    # class_names = os.listdir(configure.DATA_RAW)
+    class_names = list(["Vy"])
     print("[INFO]: getting dataset from images")
     for class_name in class_names:
         print("[INFO]: getting dataset for class {}".format(class_name))
