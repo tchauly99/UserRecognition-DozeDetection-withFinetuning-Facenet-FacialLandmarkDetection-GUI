@@ -1,4 +1,4 @@
-# AI_TGM
+# AI_TGM (Changes in GUI)
 
 _**Description**_: 
  * Face detection uses flexibly between **Haar-Cascade** (https://viblo.asia/p/haar-cascade-la-gi-luan-ve-mot-ky-thuat-chuyen-dung-de-nhan-biet-cac-khuon-mat-trong-anh-E375zamdlGW, https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html) and **Multi-task Cascaded CNN** (MTCNN) method (library available), only the first one is used in GUI.
